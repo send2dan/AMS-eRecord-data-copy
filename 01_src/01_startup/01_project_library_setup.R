@@ -57,3 +57,41 @@ if (!file.exists("renv.lock")) {
 }
 
 renv::status()
+
+# download fonts to /fonts (for _quarto.yml and _brand.yml) ----------------------------------------------------------
+
+# Replace 'path/to/your/fonts' with your desired download location
+target_dir <- here::here("fonts")
+
+# Define the download URL and target directory
+download_url_1 <- "https://assets.nhs.uk/fonts/FrutigerLTW01-65Bold.ttf"
+download_url_2 <- "https://assets.nhs.uk/fonts/FrutigerLTW01-55Roman.ttf"
+
+# Check if the 'fonts' directory exists
+if (!dir.exists(target_dir)) {
+  # Create the directory if it doesn't exist
+  dir.create(target_dir)
+}
+
+# Construct a unique filename (avoid potential overwrites)
+filename <- paste0(basename(download_url_1), ".tmp")  # Add .tmp for safety
+
+# Download the file using 'download.file' with appropriate error handling
+tryCatch({
+  download.file(download_url_1, destfile = file.path(target_dir, filename), mode = "wb")
+  # Rename the downloaded file to avoid confusion (optional)
+  file.rename(file.path(target_dir, filename), file.path(target_dir, basename(download_url_1)))
+  message("Font downloaded successfully!")
+}, error = function(e) {
+  message(paste("Error downloading font:", e))
+})
+
+# Download the file using 'download.file' with appropriate error handling
+tryCatch({
+  download.file(download_url_2, destfile = file.path(target_dir, filename), mode = "wb")
+  # Rename the downloaded file to avoid confusion (optional)
+  file.rename(file.path(target_dir, filename), file.path(target_dir, basename(download_url_2)))
+  message("Font downloaded successfully!")
+}, error = function(e) {
+  message(paste("Error downloading font:", e))
+})

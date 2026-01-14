@@ -1,0 +1,106 @@
+---
+title: "NUTH Data Science Intranet Site"
+self-contained: true
+pagetitle: "NUTH Data Science Intranet Site"
+description-meta: "This page provides information on how the reports hosted on the Data Science Intranet Site for Newcastle upon Tyne Hospitals NHS Foundation Trust were created."
+title-block-banner: "#CF4446"
+
+#Some options need to be set in format > html
+format:
+  html:
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html 
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 3 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    quarto-template-params:
+      banner-header-class: "home"
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    icon: fontawesome
+---
+
+<!-- how-were-these-reports-created, to be hosted at https://datascience.xnuth.nhs.uk/how-were-these-reports-created as index.html -->
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+## How were these reports created?
+
+The reports published on the [NUTH Data Science Intranet Site](https://nhs.sharepoint.com/sites/msteams_c1e724/NUTH%20Data%20Science%20Intranet%20Site/) have been created using using [R programming](https://r-consortium.org/)
+
+*Background*
+
+- Together with [Python](https://www.python.org/), [R programming](https://r-consortium.org/) is one of the most commonly-used, [Open-source (**free**)](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/) programming languages for data science.
+- Open-source data science programming languages are used in [many industries, including by Dell, Walmart and (increasingly) across the NHS](https://posit-dev.github.io/brand-yml/inspiration/)
+- Both R and Python benefit from a worldwide community that freely shares peer-reviewed learning and resources, e.g. through [GitHub](https://github.com/), for anyone to use
+- The [Goldacre report](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1067053/goldacre-review-using-health-data-for-research-and-analysis.pdf) actively promotes the use of open-source data science programming languages across the NHS. This is with a view to increasing adoption of [RAP (Reproducible Analytical Pipelines)](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what_is_RAP/). The vision is for modern, open-source tools to support [better, broader, safer care](https://www.gov.uk/government/publications/better-broader-safer-using-health-data-for-research-and-analysis/better-broader-safer-using-health-data-for-research-and-analysis#modern-open-working-methods-for-nhs-data-analysis)
+
+*Resources*
+
+- Great resources to learn how to code include:
+  - [NHS-R](https://nhsrcommunity.com/contact.html) delivers free-to-NHS-staff online introductory training on R and RStudio/Posit. It’s free to register. These courses are really popular and spaces are limited to about 20 per session. Sessions are scheduled once a month. For further information, please contact: [nhs.rcommunity@nhs.net](mailto:nhs.rcommunity@nhs.net).
+  - The NHS-R community also runs [the premier data science conference in the NHS](https://nhsrcommunity.com/contact.html), along with regular skill-based webinars.
+  - Also see NHS-R community blog: <https://nhsrcommunity.com/blog/>
+  - There are also many (!) excellent, free textbooks (e.g. [R4DS](https://r4ds.hadley.nz/))
+  - NHS-R supports a thriving [Slack](https://nhsrcommunity.slack.com/) community, which is an excellent resource for when you get stuck (most useful if you are able to share a [reproducible example](https://community.rstudio.com/t/faq-whats-a-reproducible-example-reprex-and-how-do-i-create-one/5219) of the problem you're encountering)
+
+*Information on using R at NUTH*
+
+- [NUTH](https://www.newcastle-hospitals.nhs.uk/) now actively supports the use of R at scale, and it can be installed on **any work PC** (simply call IT on ext 21000 and ask to be added the **“SCCM-R”** group)
+
+## Contact
+
+For feedback, queries, or requests, please contact:
+
+- Dr Daniel Weiand, 
+  - Consultant medical microbiologist, NUTH
+  - Clinical Informatics Lead for Clinical and Diagnostic Services (Board 8) 
+  - Associate Clinical Lecturer at Newcastle University
+  - Member of the Data Access Committee (DAC) for the [North East and North Cumbria (NENC) Secure Data Environment (SDE)](https://northeastnorthcumbria.nhs.uk/our-work/secure-data-environment/) 
+
+- Further details:
+  - Email: <a href="mailto:dweiand@nhs.net?subject=NHS-R Conf 2022">dweiand\@nhs.net</a>
+  - Tel (Direct): +44 (0)191 21 39054
+  - Tel (Sec): +44 (0)191 22 37736 or +44 (0)191 22 31019
+  - Website: <https://www.newcastlelaboratories.com>
+  - Academic information: [ORCiD](https://orcid.org/0000-0001-5854-3452)
+  - Twitter: [send2dan](https://twitter.com/send2dan)
+  - GitHub: [github.com/send2dan/public](https://github.com/send2dan/public)
+
+![](images/qr.png){fig-alt="QR code leading to https://github.com/send2dan/public" style="max-height:350px"}
+

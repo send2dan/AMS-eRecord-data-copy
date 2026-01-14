@@ -1,0 +1,260 @@
+---
+title: "Analysis of Critical-Flagged Blood Cultures Data" 
+subtitle: "Automated Analysis of Laboratory Data using R" 
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+# date: "`r format(Sys.time(), '%a %B %d %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html 
+    grid: # There are four variables to control the four components of the layout: the sidebar, the body, the margin, and the gutters.
+      sidebar-width: 10px # 250px (sidebar is on left)
+      body-width: 1000px # 800px
+      margin-width: 200px # 250px (margin is on right)
+      gutter-width: 1.0em # 1.5em
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 2 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  #Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: true
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+
+# parameters for report
+
+params:
+  param1: "NA"
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import_apex_CRIRES}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import_apex_crires
+
+##import data -----------------
+source("./01_src/02_data_import/02_data_import - Apex CRIRES samples.R")
+```
+
+```{r wrangle - 03_wrangle - Apex CRIRES samples}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle_apex_crires_results
+
+## undertake basic wrangling
+source("./01_src/03_wrangle/03_wrangle - Apex CRIRES samples.R")
+```
+
+# Quick summary
+
+This report aims to streamline and automate extraction and analysis of critical-flagged blood culture data at The Newcastle Upon Tyne Hospitals NHS Foundation Trust (NUTH). 
+
+Data are extracted from the Laboratory Information Management System (LIMS). This includes information on all critical-flagged blood cultures received in the last 14 days. 
+
+All data extraction, wrangling, analysis, reporting and publication is undertaken using [R programming](https://nhsrcommunity.com/). This approach facilitates regular oversight of antimicrobial use and supports evidence-based clinical decision-making.
+
+::: {.callout-note collapse="true"}
+
+# Introduction
+
+Blood cultures flagged as critical (using the CRIRES flag in the laboratory information management system, LIMS) represent some of the most clinically significant infections requiring appropriate intervention by infection specialists. 
+
+Data on [Antimicrobial Resistance (AMR) rates](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-penicillin-allergy-delabelling-report/index.html?csf=1&web=1&e=modvEc) is regularly published to the [NUTH Data Science Intranet Site](https://nhs.sharepoint.com/sites/msteams_c1e724/NUTH%20Data%20Science%20Intranet%20Site/).
+
+# Aim
+
+- To extract and analyse data on all critical-flagged blood cultures.
+
+# Methods
+
+The LIMS database was interrogated to extract data on critical-flagged blood culture results.
+
+All data extraction, wrangling, analysis, reporting and publication is undertaken by means of [Open-source ](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/) data science tools, including [R programming](https://nhsrcommunity.com/). This approach facilitates regular oversight of antimicrobial use and supports evidence-based clinical decision-making.
+
+:::
+
+## Limitations
+
+- **Data quality** depends on accurate manual critical-flagging of blood culture results determined to be clinically significant.
+
+# Results
+
+- This report focuses on data extracted on **`r format(today(), '%A %d %B %Y')`** 
+
+- Data includes all critical-flagged blood cultures received between: **`r format(ymd(crires_results_dates$most_rececent_receive_date), '%a %B %d %Y')` and `r format(ymd(crires_results_dates$earliest_receive_date), '%a %B %d %Y')`**
+
+::: {.panel-tabset}
+
+## Age-related data
+
+[See Limitations section](#limitations)
+
+```{r age_histogram}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: age_histogram
+
+# histogram age ----------
+data_crires_bc_wrangled_wide %>%
+  distinct(mrn, .keep_all = TRUE) |>
+  filter(!is.na(age)) %>%
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 10) +
+  theme_minimal() +
+  labs(
+    title = "Age of patients with critical-flagged blood cultures",
+    subtitle = glue::glue("Data for the 14 days prior to {date}",
+                          date = format(ymd(crires_results_dates$most_rececent_receive_date), "%A %d %B %Y")
+    ),
+    x = "Age",
+    y = "n"
+  )
+
+```
+
+## Collection location
+
+```{r location_code}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: location_code
+
+# location_code ----------
+data_crires_bc_wrangled_wide %>%
+  distinct(mrn, specimen_no, .keep_all = TRUE) |>
+  filter(!is.na(location_code)) |>
+  count(location_code) |> 
+  ggplot(aes(fct_reorder(location_code, -n), n)) +
+  geom_col() +
+  theme_minimal() +
+  labs(
+    title = "Specimen collection location for patients with critical-flagged blood cultures",
+    subtitle = glue::glue("Data for the 14 days prior to {date}",
+                          date = format(ymd(crires_results_dates$most_rececent_receive_date), "%A %d %B %Y")
+    ),
+    x = NULL,
+    y = "n"
+  ) +
+  coord_flip()
+```
+:::
+
+## Interactive table
+
+Data for critical-flagged blood cultures received in the 14 days prior to `r format(today(), '%a %B %d %Y')`, leading to the isolation of an organism.
+
+[See Limitations section](#limitations)
+
+```{r data_crires_bc_wrangled_wide_for_table}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_crires_bc_wrangled_wide_for_table
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "specimen_no", "consultant", "`current/intended antibiotic therapy`", "`anatomical site sampled`", "`indwelling device nature (if applicable)`")
+interactive_table(data_crires_bc_wrangled_wide_for_table |> 
+                    arrange(desc(location_code), mrn, `receive date`), nrow = 5, not_as_factor = not_as_factor)
+```
+
+```{r beepr_finished}
+beepr::beep(3)
+```

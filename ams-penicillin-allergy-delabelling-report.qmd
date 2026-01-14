@@ -1,0 +1,300 @@
+---
+title: "Allergy data analysis" 
+subtitle: "Automated Identification of Opportunities for Penicillin Allergy De-labeling using R" 
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+# date: "`r format(Sys.time(), '%a %B %d %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html 
+    grid: # There are four variables to control the four components of the layout: the sidebar, the body, the margin, and the gutters.
+      sidebar-width: 10px # 250px (sidebar is on left)
+      body-width: 1000px # 800px
+      margin-width: 200px # 250px (margin is on right)
+      gutter-width: 1.0em # 1.5em  
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 2 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  #Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: true
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+
+# parameters for report
+
+params:
+  param1: "NA"
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import
+
+# data import -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - read database.R")
+```
+
+```{r wrangle penicillin-allergy-delabelling}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle penicillin-allergy-delabelling
+
+source("./01_src/03_wrangle/03_wrangle - penicillin-allergy-delabelling.R")
+```
+
+# Introduction 
+
+This report presents an analysis of prescribing data to investigate the prevalence and nature of documented penicillin (beta-lactam) allergies at NUTH using [R programming](https://nhsrcommunity.com/). 
+
+Given the significant public health implications of over-diagnosis of penicillin allergy, this analysis aims to identify potential opportunities for allergy de-labelling.
+
+By quantifying the prevalence of penicillin allergies and evaluating inconsistencies in allergy documentation,  this analysis seeks to inform the development of a data-driven approach to improve antibiotic stewardship and reduce the burden of antimicrobial resistance.
+
+Penicillin (beta-lactam) allergy is the most commonly reported drug allergy, affecting an estimated 5-10% of the general population [@cdc-really-an-allergy; @getting-the-label-right]. 
+
+Studies suggest that only 10-20% of reported allergies are truly IgE-mediated hypersensitivity reactions [@getting-the-label-right]. 
+
+Over-diagnosis of penicillin (beta-lactam) allergy has significant public health consequences, increasing reliance on alternative antimicrobials, often with broader spectrum activity, thereby contributing to antimicrobial resistance (AMR). 
+
+# Aim
+
+- This project aims to survey prescribing data to identify potential opportunities for penicillin (beta-lactam) allergy delabelling. 
+
+- Data of interest include: Documented allergies and reactions; Concomitant antibiotic use; and Patient demographics. 
+
+- We aim to: Quantify the prevalence and nature of documented penicillin (beta-lactam) allergies; Evaluate potential inconsistencies between documented allergies and medication history; and Explore the use of alternative antibiotic classes. 
+
+- This work will inform the development of a real-time, data-driven approach to penicillin (beta-lactam) allergy delabelling.
+
+# Methods
+
+- The Nautilus data warehouse was interrogated to extract drug prescription and allergy data from Oracle Health Millennium (also known as eRecord or Cerner Millennium).
+
+- For the purposes of this analysis, "penicillin allergy" is defined as an allergy to any of the following classes of medications: Penicillins, Cephalosporins, Monobactams, and Carbapenems.
+
+## Defining allergy de-labelling
+
+What is meant by penicillin allergy de-labelling?
+
+- Penicillin (beta-lactam) allergy de-labelling is the process of reviewing a patient's documented allergy to determine its validity. 
+
+- By accurately identifying individuals who are not truly allergic, it may be possible to treat patients with beta-lactams, potentially leading to improved clinical outcomes. 
+
+- Reduced consumption of broad-spectrum antibiotics helps combat the growing threat of antibiotic resistance. 
+
+- Furthermore, many beta-lactams are less expensive than alternative antibiotics, leading to potential cost savings for healthcare systems.
+
+# Results
+
+- This report focuses on data extracted on **`r format(ymd(import_date_report), '%A %d %B %Y')`**
+
+- Earliest admission date for patients in this cohort: **`r format(start_date_admission_dt, "%d %B %Y")`**
+
+- Latest admission date for patients in this cohort: **`r format(end_date_admission_dt, "%d %B %Y")`**
+
+- Total number of distinct patients included in analysis: **`r length(mrn_distinct_total)`* distinct patients were included in the analysis.**
+
+- Of these patients patients:
+
+**`r length(mrn_distinct_any_allergy_total)` (`r round(length(mrn_distinct_any_allergy_total) / length(mrn_distinct_total) * 100, digits = 1)`%)** had a recorded allergy to any medication; and
+
+**`r length(mrn_distinct_with_beta_lac_allergy)` (`r round(length(mrn_distinct_with_beta_lac_allergy) / length(mrn_distinct_total) * 100, digits = 1)`%)** had a recorded "penicillin allergy".
+
+## Allergy prevalence
+
+Proportion of patients with a documented "penicillin allergy"
+
+```{r prop_documented_allergy}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: prop_documented_allergy
+
+# Calculate percentages
+percentage_allergy <- length(mrn_distinct_with_beta_lac_allergy) / length(mrn_distinct_total) * 100
+percentage_no_allergy <- 100 - percentage_allergy
+
+# Create a data frame
+df <- data.frame(
+  group = c("With beta-lactam allergy", "Without beta-lactam allergy"),
+  value = c(percentage_allergy, percentage_no_allergy)
+)
+
+# Create the pie chart with percentages
+ggplot(df, aes(x = "", y = value, fill = group)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = paste0(round(value, 1), "%")), position = position_stack(vjust = 0.5)) +
+  labs(fill = "") +
+  theme_void() +
+  theme(legend.position = "right")
+```
+
+## Allergy prevalence, stratified by age
+
+Table showing proportion of patients with documented "penicillin allergy", stratified by age group
+
+```{r prop_documented_age_group_table}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: prop_documented_age_group_table
+
+perc_patients_with_allergy |>
+  select(age_group, n_with_allergy, n_per_age_group, perc) |>
+  mutate(perc = round(perc, digits = 1)) |>
+  knitr::kable(
+    col.names = c(
+      "Age group",
+      "Patients with beta lactam allergy (n)",
+      "Patients total (n)",
+      "Patients with beta lactam allergy (%)"
+    ),
+    align = "c"
+  )
+```
+
+Figure showing proportion of patients with documented "penicillin allergy", stratified by age group
+
+```{r prop_documented_age_group_fig}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: prop_documented_age_group_fig
+
+perc_patients_with_allergy |>
+  ggplot(aes(perc, age_group)) +
+  geom_col() +
+  ylab("age group") +
+  xlab("% patients per a beta lactam allergy")
+```
+
+# Interactive table 
+
+Interactive table featuring beta lactam-allergic patients who were prescribed beta lactams
+
+Arranged by patient name, featuring only the latest prescription date for each antimicrobial (where available)
+
+```{r beta_lactam_allergic_patients_Rx_beta_lactams_table}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: beta_lactam_allergic_patients_Rx_beta_lactams_table
+
+# print table created in 01_src/03_wrangle/03_wrangle - penicillin-allergy-delabelling.R
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "initials", "fin",  "pharmacy_order_sentence", "pharmacy_order_sentence_short")
+interactive_table(beta_lac_allergy_rx_beta_lac_location_renamed, nrow = 5, not_as_factor = not_as_factor)
+```
+
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
+
+<!-- # Appendix {.unnumbered} -->
+
+```{r beepr_finished}
+beepr::beep(3)
+```

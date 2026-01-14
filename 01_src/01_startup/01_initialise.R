@@ -21,51 +21,70 @@ if (!require("renv")) {
 
 library(renv)
 
+# set repos for {renv}
+options(
+  renv.config.repos.override = "https://packagemanager.posit.co/cran/latest",
+  renv.config.install.verbose = TRUE, # This will give more information in the console while installing the R packages, which may give more error details
+  renv.config.connect.timeout = 5, # default is 20 seconds
+  renv.config.connect.retry = 1, # default is 3
+  renv.download.override = utils::download.file
+  # renv.download.trace = TRUE # useful for debugging
+)
+
+# https://rstudio.github.io/renv/reference/config.html#renv-config-cache-symlinks
+
 # list packages to download -----------------------------------------------
 
 packages_to_download <- c(
-  "tidymodels", #https://www.tidymodels.org/packages/ The core tidymodels packages work together to enable a wide variety of modeling approaches
   "dotenv", # for reading ".env" file
-  "AMR", #organism ID and susceptibility data wrangling
-  "cleaner", #to help analyse organism data created using AMR package
+  "formatR", #The formatR package is required by the chunk option tidy = TRUE (further down)
   "bookdown", # required to set knitr options
   "here", # for finding files
   "tidytext", # for text cleaning tools
   "shiny", # for viewing rendered quarto reports (?)
   "quarto", # for quarto report rendering scripts
   "flextable", # for creating pretty (non-interactive) tables
-  #"reactable", # for creating interactive tables in quarto reports
-  #"plotly", # for creating interactive charts in quarto reports
-  "excel.link", # to read password protected excel files (xl.read.file function)
+  "reactable", # for creating interactive tables in quarto reports
+  "plotly", # for creating interactive charts in quarto reports
+  "patchwork", #to create ggplot patchworks
+  #"scales",
+  "fontawesome",
+  "ellmer", # for LLMs
+  "gitcreds", # for GitHub copilot
+  "gargle", # for Google authentication
+  "curl", # required for ellmer
+  "ragnar", # for RAG workflows
+  "rvest", # for reading html file contents
+  "scales",
+  "fs", # to create directories and move files etc..
   # "dplyr",
-  # "lubridate",
+  "lubridate", # for dates and times - also incl in tidyverse
+  "igraph", #for network analysis of linked patients
+  "ggraph",  #for network analysis of linked patients
+  "visNetwork", #for network analysis of linked patients
+  "zoo", #time related calcs e.g. zoo::rollmean
+  "NHSRplotthedots", #tools for drawing statistical process control (SPC) charts. This package supports NHS England’s ‘Making Data Count’ programme, and allows users to draw XmR charts, use change points, and apply rules with summary indicators for when rules are breached.
   # "stringr",
   # "forcats",
   # "purrr",
-  "odbc", # for SQL connection to APEX
+  # "copypasta",
+  "AMR", # for antimicrobial resistance analysis
   "gt",
-  "knitr",
+  "gtExtras",
+  "kableExtra",
+  "broom", 
+  "odbc", # for SQL connection to APEX
   "DBI", # for SQL connection to APEX
-  "NHSRplotthedots", # QI work
-  "RSQLite",
-  "skimr", # Compact and Flexible Summaries of Data
+  "RSQLite", # to create database files
   "tidyverse",
-  "networkD3", #for sankey diagrams
+  "RColorBrewer", # for colour palettes
   "readr", #to read csv files
   "readxl", #to read excel files
   "janitor", # clean_names function
-  "beepr",
   "bench", # for timing SQL queries
-  "openxlsx",
-  #"waffle", # for e.g. Waffle Chart Showing Survival Rates
-  "ggrepel", # for geom_label_repel function... geom_label_repel draws a rectangle underneath the text, making it easier to read. The text labels repel away from each other and away from the data points.
-  #"trelliscopejs" # for creating interactive dashboards in quarto reports
-  "dlookr", # for creating data diagnosis reports
-  "kknn", # for building k-nearest neighbour models
-  "xfun",
-  "corrplot", # for plotting data from correlation matrices
-  "butcher", # for reducing size of model objects before saving
-  "bundle" # for collecting together all info associated with a model object before saving
+  "Microsoft365R", # for connecting R to Outlook for email sending
+  "blastula", # for composing HTML emails
+  "ggtext" # allows addition of HTML color spans in chart title/subtitle text... requires plot.subtitle = ggtext::element_markdown() to be added to the theme to render the HTML
 )
 
 # check packages already installed vs. listed for install -----------------
@@ -138,6 +157,10 @@ cat(paste("% Automatically generated", Sys.time()),
   sep = "\n"
 )
 
+# theme minimal -----------------------------------------------------------
+
+ggplot2::theme_set(ggplot2::theme_minimal())
+
 # knitr options -----------------------------------------------------------
 
 knitr::opts_chunk$set(
@@ -147,17 +170,17 @@ knitr::opts_chunk$set(
   out.width = "90%"
 )
 
-# theme minimal -----------------------------------------------------------
+options(scipen = 999)  # Disable scientific notation
 
-ggplot2::theme_set(ggplot2::theme_minimal())
-
-# Update packages (optional) ----------------------------------------------
-
-# renv::update(
-#   "pillar",
+# renv::remove("trelliscopejs")
+# 
+# renv::install(
+#   "AMR",
 #   prompt = FALSE
 # )
-
+# 
 # renv::snapshot()
 # 
 # renv::status()
+
+

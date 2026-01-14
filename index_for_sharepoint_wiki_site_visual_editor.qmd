@@ -1,0 +1,182 @@
+---
+title: "Data Science Intranet Site"
+self-contained: true
+pagetitle: "Data Science Intranet Site"
+description-meta: "Welcome to the Data Science website for Newcastle upon Tyne Hospitals NHS Foundation Trust."
+title-block-banner: "#CF4446"
+
+#Some options need to be set in format > html
+format:
+  html:
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html 
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 3 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'png' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    quarto-template-params:
+      banner-header-class: "home"
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    icon: fontawesome
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+# Welcome to the Data Science Intranet Site {style="color: #CF4446;"}
+
+This front page provides quick links to our latest interactive data reports. Please select a report below to access data visualisations and insights.
+
+# About this site 
+
+This site serves as a central hub for data science outputs created using *entirely cost-free* [Fully Open-Source Software (FOSS)](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/), including [Python](https://www.python.org/) and [R programming](https://r-consortium.org/).
+
+The aim is to provide easy access to interactive, regularly updated reports that facilitate informed decision-making, promote transparency, and encourage the use of data-driven insights in everyday practice.
+
+Only the latest version of each report will be stored on this Site. The reports published here should not be saved to create large datasets, as this goes against the [Caldicott principles](https://www.gov.uk/government/publications/the-caldicott-principles).
+
+## Important notice 
+
+The reports accessible from this site contain *sensitive clinical and operational data*. Please ensure you adhere to Trust policies and information governance requirements when viewing or discussing these reports. Do not distribute content outside approved channels or to unauthorised individuals.
+
+# Reports 
+
+Choose appropriate option from tabs, below.
+
+## Antimicrobial stewardship 
+
+These reports are updated on a **weekly basis**
+
+<!-- > **Last update:** `r format(today(), "%A %d-%m-%y")` -->
+
+### [**Antimicrobial Expenditure Tracking**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-antimicrobial-expenditure-tracking/index.html?csf=1&web=1&e=hwghq4)
+
+-   Analyses antimicrobial expenditure across NUTH
+
+### [**Antimicrobial Usage Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-antimicrobial-usage-report/index.html?csf=1&web=1&e=n8NHLh)
+
+-   Identifies opportunities for de-escalation or discontinuation or IV-to-oral switches
+-   Supports surveillance and clinical review
+
+### [**CPE and CPO Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-cpe-report/index.html?csf=1&web=1&e=l9qcg6)
+
+-   Comprehensive analysis of all significant CPE/CPO results—culture, immunoassay, and molecular tests
+
+### [**Critical-Flagged, Positive Blood Cultures Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-critical-results-report/index.html?csf=1&web=1&e=ww2nji)
+
+-   Automated analysis of data on the last 14 days’ critical-flagged, flagged blood culture results
+
+### [**Critical-Flagged, Positive Blood Cultures linked with Antimicrobial Prescriptions**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-critical-results-and-antimicrobial-therapy-report/index.html?csf=1&web=1&e=hhSGRo)
+
+-   Links data on the last 14 days’ critical-flagged, flagged blood culture results with data on practically all inpatients’ antimicrobial prescriptions
+
+### [**Gentamicin Prescriptions Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-gentamicin-prescriptions-report/index.html?csf=1&web=1&e=jHc8fb)
+
+-   Automated analysis of inpatient gentamicin prescriptions
+
+### [**MRSA Positive Patients Prescribed Antimicrobials Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-mrsa-pos-patients-prescribed-antimicrobials-report/index.html?csf=1&web=1&e=L5EcfT)
+
+-   Automated analysis of systemic antibiotic prescriptions for patients with a history of MRSA at NUTH
+
+### [**MRSA Screening Compliance Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-mrsa-screening-compliance-report/index.html?csf=1&web=1&e=bKu5mR)
+
+-   Evaluation of universal MRSA admission screening compliance
+
+### [**Penicillin Allergy Delabelling Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/ams-penicillin-allergy-delabelling-report/index.html?csf=1&web=1&e=modvEc)
+
+-   Surveys prescribing data to identify penicillin allergy delabelling opportunities
+
+## Laboratory metrics 
+
+These reports are updated on a **quarterly basis**
+
+### [**Blood Culture Isolate Resistance Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/lab-blood-culture-isolate-resistance-report/index.html?csf=1&web=1&e=teg8M8)
+
+-   Modelled predictions of antimicrobial drug resistance rates
+-   Based on susceptibility data from all blood cultures since Q1 2019
+
+### [**Blood Culture Quality Metrics Report**](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/lab-blood-culture-quality-metrics-report/index.html?csf=1&web=1&e=uZ6GJq)
+
+-   Key blood culture quality metrics: fill volumes, time to detection, contamination rates, as well as interim reporting and critical-flagging of blood culture results
+
+# FAQs 
+
+## Who can access these reports?
+
+These reports are intended for use by authorised staff members of the Newcastle upon Tyne Hospitals NHS Foundation Trust. Please do not share reports outside approved channels.
+
+Access is controlled by means of SharePoint permissions. 
+
+## Requesting access to the Data Science Intranet Site
+
+If you know of someone who should have access (but doesn't) please share [this link](https://nhs.sharepoint.com/sites/msteams_c1e724/NUTH%20Data%20Science%20Intranet%20Site/) with them, and ask them to click on "Request access" when prompted.
+
+## How often are the reports updated?
+
+Update frequency depends on the report. Antimicrobial stewardship reports are typically updated weekly, while laboratory metrics are updated quarterly. Refer to each report for specific details.
+
+## How do I access historical reports?
+
+Only the latest version of each report is stored on this site to comply with data governance policies.
+
+## How do I give feedback on this site
+
+Please submit [**feedback](#feedback) via Microsoft Forms
+
+## Who do I contact for support or data requests?
+
+For feedback, queries, or data requests, please [see Contact information](#contact)
+
+## How were these reports created?
+
+For further information on how the reports hosted here were created, please [follow this link](https://nhs.sharepoint.com/:u:/r/sites/msteams_c1e724/Shared%20Documents/Data%20science/Data%20science%20intranet%20site/how-were-these-reports-created/index.html?csf=1&web=1&e=TbwqLV)
+
+# Contact {#contact} 
+
+For feedback, queries, or requests, please contact:
+
+-   Dr Daniel Weiand
+    -   Consultant medical microbiologist, NUTH
+    -   Clinical Informatics Lead for Clinical and Diagnostic Services (Board 8)
+    -   Email: <a href="mailto:dweiand@nhs.net?subject=NUTH Data Science Intranet Site">dweiand\@nhs.net</a>
+    -   Tel (Sec): +44 (0)191 22 37736 or +44 (0)191 22 31019
+
+# Feedback {#feedback} 
+
+[**Please submit feedback via Microsoft Forms](https://forms.cloud.microsoft/e/gNygyENWDd)
+
+Do not include any **sensitive clinical or operational data** with your feedback.

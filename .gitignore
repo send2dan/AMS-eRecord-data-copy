@@ -41,6 +41,7 @@ images/
 *.pdf
 *.ppt
 *.pptx
+*.rds
 
 # ignore email templates
 *.oft
@@ -132,3 +133,4 @@ rsconnect/
 # Ignore R package: bookdown caching files
 /*_files/
 /.quarto/
+

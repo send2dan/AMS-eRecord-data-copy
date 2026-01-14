@@ -1,0 +1,392 @@
+---
+title: "Analysis of Carbapenemase Producing Enterobacterales (CPE) and Carbapenemase Producing Organisms (CPO) Data" 
+subtitle: "Automated Analysis of Laboratory Data using R" 
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+# date: "`r format(Sys.time(), '%a %d %B %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html 
+    grid: # There are four variables to control the four components of the layout: the sidebar, the body, the margin, and the gutters.
+      sidebar-width: 10px # 250px (sidebar is on left)
+      body-width: 1000px # 800px
+      margin-width: 200px # 250px (margin is on right)
+      gutter-width: 1.0em # 1.5em
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 2 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  #Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: true
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+
+# parameters for report
+
+params:
+  param1: "NA"
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import-Apex CPE_and_enzyme_samples}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import-Apex CPE_and_enzyme_samples
+
+## undertake basic wrangling
+source("./01_src/02_data_import/02_data_import - Apex CPE and enzyme samples.R")
+```
+
+```{r data_wrangle-Apex CPE_and_enzyme_samples}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_wrangle-Apex CPE_and_enzyme_samples
+
+## undertake basic wrangling
+source("./01_src/03_wrangle/03_wrangle - Apex CPE and enzyme samples.R")
+```
+
+# Quick summary
+
+This report aims to streamline and automate extraction and analysis of Carbapenemase Producing Enterobacterales (CPE) and  Carbapenemase Producing Organisms (CPO) data are The Newcastle Upon Tyne Hospitals NHS Foundation Trust (NUTH). 
+
+Data are extracted from the Laboratory Information Management System (LIMS).  
+
+All data extraction, wrangling, analysis, reporting and publication is undertaken using [R programming](https://nhsrcommunity.com/). This approach facilitates regular oversight of antimicrobial use and supports evidence-based clinical decision-making.
+
+Of note, as of Mon 04 August 2025, [ICNET](https://www.icnetsoftware.com/) is unable to report or integrate non-culture-based significant results -- In effect, it can only report when CPE has been recorded as "isolated" from a specimen, but nothing more. Therefore, [ICNET](https://www.icnetsoftware.com/) does not and cannot report on significant molecular test results. This is a major risk to patient safety and infection control efforts, which is being added to the Trust's risk register.
+
+This report aims to address this surveillance gap by providing a comprehensive analysis of all significant CPE/CPO results—including culture, immunoassay, and molecular tests—thereby supporting more robust infection control practices and informed clinical decision-making.
+
+::: {.callout-note collapse="true"}
+
+# Introduction
+
+Carbapenemase-producing Enterobacterales (CPE) and carbapenemase-producing organisms (CPO) are among the most clinically significant infection control hazard organisms encountered in healthcare settings. 
+
+These bacteria possess resistance mechanisms that render them resistant to carbapenems—antibiotics often considered the last line of defense against multidrug-resistant infections. 
+
+The emergence and spread of CPE/CPO threaten effective antimicrobial therapy, increase the risk of transmission within hospitals, and are associated with poor patient outcomes, including increased morbidity, mortality, and length of stay.
+
+Effective surveillance and timely reporting of CPE/CPO cases are critical for infection prevention and control. However, as of Monday, 04 August 2025, the Trust’s current infection control surveillance system ([ICNET](https://www.icnetsoftware.com/)) is limited in its reporting capabilities. Specifically: [ICNET](https://www.icnetsoftware.com/) can only report cases where CPE/CPO has been isolated on culture from clinical specimens. 
+
+[ICNET](https://www.icnetsoftware.com/) does not and cannot currently report on significant results from immunoassay and molecular diagnostic tests, both of which are essential for early detection and containment of these organisms, as well as epidemiological characterisation. 
+
+As of `r format(today(), '%A %d %B %Y')`, a large proportion (`r round(perc_molecular, 1)` %) of CPE/CPO is recorded as detected solely by means of molecular diagnostic test results; these results are not captured by [ICNET](https://www.icnetsoftware.com/).
+
+Currently, Infection Prevention and Control Nurses (IPCNs) need to manually enter CPE-related data into [ICNET](https://www.icnetsoftware.com/), which by its very nature is time-intensive and unreliable.
+
+These limitations pose a significant risk to patient safety and infection control efforts, as cases identified by immunoassay and molecular diagnostic tests are not unreported. 
+
+In recognition of this risk, the issue is being formally added to the Trust’s risk register.
+
+This report aims to address this surveillance gap by providing a comprehensive analysis of all significant CPE/CPO results—including culture, immunoassay, and molecular tests—thereby supporting more robust infection control practices and informed clinical decision-making.
+
+# Aim
+
+- To extract and analyse data on all CPE/CPO data, including significant results of immunoassay, molecular tests and culture.
+
+# Methods
+
+The LIMS database was interrogated to extract CPE data for the past 24 weeks, including  significant results of immunoassay, molecular tests and culture.
+
+All data extraction, wrangling, analysis, reporting and publication is undertaken by means of [Open-source ](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/) data science tools, including [R programming](https://nhsrcommunity.com/). This approach facilitates regular oversight of antimicrobial use and supports evidence-based clinical decision-making.
+
+:::
+
+## Limitations
+
+- **Data Quality and Completeness:** The accuracy of the analyses presented is contingent upon the manual entry of key information into the Laboratory Information Management System (LIMS), including the results of immunoassay, molecular, and culture tests. Errors or omissions during data entry may lead to underestimation or misclassification of cases. 
+
+- **Scope of Surveillance:** The data included in this report are restricted to specimens processed within the Trust’s laboratories. Cases detected or managed outside the Trust will not be captured, which is relevant to patients transferred to NUTH from other hospital Trusts. 
+
+- **Lack of Clinical Correlation:** The report does not include detailed clinical outcome data (such as patient morbidity, mortality, or treatment outcomes), nor does it assess potential risk factors for acquisition or transmission of CPE/CPO.
+
+- **Potential for Unmeasured Confounding:** The analysis does not adjust for patient-level factors such as comorbidities, length of stay, or prior antimicrobial exposure, which may influence observed trends.
+
+
+# Results
+
+- This report summarises data extracted on `r format(today(), '%A %d %B %Y')` 
+
+- Data encompass all significant results related to CPE/CPO, including immunoassay, molecular, and culture-based findings, for requests received between: `r format(receive_date_start, '%a %d %B %Y')` and `r format(receive_date_end, '%a %d %B %Y')` (i.e. data for the past 24 weeks)
+
+## CPE/CPO cases per month
+
+The plot below shows the number of specimens per month that lead to isolation of CPE/CPO, for the past 24 weeks.
+
+[See Limitations section](#limitations)
+
+```{r cpo_cpe_patients_per_month}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: cpo_cpe_patients_per_month
+
+# using function created in 01_src/functions.R
+
+cpo_cpe_patients_per_month
+```
+
+## Visualisation of linked CPE/CPO cases
+
+The plot below visually represents all patient clusters with epidemiological links, over the past 24 weeks, as defined in the previous section. Each cluster is identified by shared ward/location and temporal proximity (specimens received within ±4 weeks), as well as a shared resistance mechanism or immunoassay result. This visualisation helps identify probable outbreaks or transmission events within the Trust.
+
+[See Limitations section](#limitations)
+
+```{r links_plot}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: links_plot
+
+# using function created in 01_src/functions.R
+
+links_plot
+```
+
+## Location of linked CPE/CPO cases
+
+This section presents patients with epidemiological links, over the past 24 weeks, defined as those who shared both a location (location_code) and had specimen receive dates within a ±4 week window. An additional criterion for linkage is the presence of a matching cpe_mechanism or immunoassay_result, suggesting potential transmission or shared exposure.
+
+Identifying linked cases is essential for monitoring possible clusters and informing targeted infection control interventions. The table below details the relevant patient pairs or groups identified during the reporting period.
+
+[See Limitations section](#limitations)
+
+```{r data_cpe_links_location}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_cpe_links_location
+
+# using function created in 01_src/functions.R
+
+ft_data_cpe_links_loc
+```
+
+## All CPE/CPO results
+
+The following section summarises all patients in whom CPE or CPO were detected and/or isolated from specimens received between `r format(receive_date_start, '%a %d %B %Y')` and `r format(receive_date_end, '%a %d %B %Y')` (i.e. data for the past 24 weeks). This includes results from culture, immunoassay, and molecular diagnostic methods. The table below provides a detailed overview of each case, including specimen and patient information, to facilitate review and further analysis by infection prevention and clinical teams.
+
+```{r data_summary_3}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_summary_3
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("hospital_number", "specimen_no", "initials", "receive_date")
+interactive_table(data_summary_3 |>
+                    arrange(desc(receive_date)), nrow = 10, not_as_factor = not_as_factor)
+```
+
+## Linked CPE/CPO cases
+
+This section presents patients with epidemiological links, over the past 24 weeks, defined as those who shared both a location (location_code) and had specimen receive dates within a ±4 week window. An additional criterion for linkage is the presence of a matching cpe_mechanism or immunoassay_result, suggesting potential transmission or shared exposure.
+
+Identifying linked cases is essential for monitoring possible clusters and informing targeted infection control interventions. The table below details the relevant patient pairs or groups identified during the reporting period.
+
+[See Limitations section](#limitations)
+
+```{r data_cpe_links}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_cpe_links
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("hospital_number", "specimen_no")
+interactive_table(data_cpe_links |> 
+                    select(-id.x, -id.y) |> 
+                    arrange(desc(receive_date.x)), nrow = 5, not_as_factor = not_as_factor)
+```
+
+## Further results
+
+Select appropriate tab.
+
+::: {.panel-tabset}
+
+## Proportion of CPE/CPO Isolated by Culture
+
+As of `r format(today(), '%A %d %B %Y')`, a large proportion (`r round(perc_molecular, 1)` % over the past 24 weeks) of CPE/CPO is recorded as detected solely by means of molecular diagnostic test results; these results are not captured by [ICNET](https://www.icnetsoftware.com/).
+
+```{r ft_prop_samples_culture_pos}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: ft_prop_samples_culture_pos
+
+# using function created in 01_src/functions.R
+
+ft_prop_samples_culture_pos
+```
+
+## Specimen type information
+
+The specimen types that lead to detection and/or isolation of CPE/CPO over the past 24 weeks is shown below. 
+
+[See Limitations section](#limitations)
+
+```{r specimen_type_code_geom_col_2}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: specimen_type_code_geom_col_2
+
+specimen_type_code_geom_col_2
+
+```
+
+## Collection location
+
+This section summarises the distribution of CPE/CPO cases according to the clinical location where the specimen was collected or processed, over the past 24 weeks. Understanding the spatial distribution of cases within the Trust can help identify areas of increased incidence, potential transmission hotspots, or the need for targeted infection control interventions.
+
+```{r location_code_geom_col}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: location_code_geom_col
+
+location_code_geom_col
+
+```
+
+## Age-related data
+
+The age distribution of patients in whom CPE/CPO has been detected and/or isolated over the past 24 weeks is shown below. 
+
+[See Limitations section](#limitations)
+
+```{r age_histogram}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: age_histogram
+
+age_histogram
+
+```
+:::
+
+# Conclusion
+
+This report demonstrates the power and flexibility of [open-source (**free**)](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/) data science tools, such as [R programming](https://nhsrcommunity.com/), in bridging critical gaps in the surveillance of Carbapenemase Producing Enterobacterales (CPE) and Carbapenemase Producing Organisms (CPO) at NUTH. 
+
+By integrating culture, immunoassay, and molecular diagnostic data, this report provides a more comprehensive view of CPE/CPO activity than is currently possible using the [ICNET](https://www.icnetsoftware.com/) platform alone. [ICNET](https://www.icnetsoftware.com/)’s inability to capture and report non-culture-based results means that a substantial proportion of CPE/CPO cases remain invisible to standard infection control workflows, leading to over-reliance on manual data entry.
+
+These limitations compromise the effectiveness of local infection prevention efforts. In contrast, the use of modern, [open-source (**free**)](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/) data science tools, such as [R programming](https://nhsrcommunity.com/), offers scalable, reproducible, and transparent solutions that are rapidly becoming the standard in healthcare analytics around the world—including across the NHS, as recommended in the [Goldacre report](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1067053/goldacre-review-using-health-data-for-research-and-analysis.pdf) and echoed in [Lord Darzi's report on the state of the National Health Service in England](https://www.gov.uk/government/publications/independent-investigation-of-the-nhs-in-england).
+
+To deliver safer, more responsive care, the Trust should invest in its data science capability. This includes not only infrastructure and software, but also the recruitment and development of skilled staff with expertise in [open-source (**free**)](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/) analytics, automation, and reproducible research. Such investment will ensure that diverse teams have access to timely, actionable intelligence, ultimately supporting better outcomes for patients and more efficient use of NHS resources.
+
+```{r beepr_finished}
+beepr::beep(3)
+```
