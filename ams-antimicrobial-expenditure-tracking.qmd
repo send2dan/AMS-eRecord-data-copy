@@ -1,0 +1,463 @@
+---
+title: "Costings data analysis" 
+subtitle: "Automated Antimicrobial Expenditure Tracking using R"
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+# date: "`r format(Sys.time(), '%a %B %d %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 3 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  # Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: false
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+---
+
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import
+
+# data import -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - read database.R")
+```
+
+```{r wrangle - 03_wrangle - merge_data_to_create_antimicrobial_pool}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle-merge_data_to_create_antimicrobial_pool
+
+source("./01_src/03_wrangle/03_wrangle - merge_data_to_create_antimicrobial_pool.R")
+```
+
+```{r 03_wrangle - point_prevalence_survey}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: 03_wrangle - point_prevalence_survey
+
+source("./01_src/03_wrangle/03_wrangle - point_prevalence_survey.R")
+```
+
+```{r wrangle antimicrobial_costings_part_1}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: 03_wrangle - antimicrobial_costings_part_1
+
+source("./01_src/03_wrangle/03_wrangle - antimicrobial_costings_part_1.R")
+```
+
+```{r wrangle antimicrobial_costings_part_2}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: 03_wrangle - antimicrobial_costings_part_2
+
+source("./01_src/03_wrangle/03_wrangle - antimicrobial_costings_part_2.R")
+```
+
+```{r 04a_analyse - antimicrobial_costings}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: 04a_analyse - antimicrobial_costings
+
+source("./01_src/04a_analyse/04a_analyse - antimicrobial_costings.R")
+```
+
+# Introduction
+
+Antimicrobial stewardship programmes are essential for optimising prescribing practices, reducing antimicrobial resistance, and controlling healthcare expenditure. Understanding prescribing patterns and associated costs is fundamental to implementing effective stewardship interventions within hospital settings. Automated surveillance systems that provide timely, accurate data on antimicrobial expenditure enable clinicians and pharmacy teams to identify prescribing trends, benchmark performance, and target interventions where they are most needed.
+
+The volume and diversity of antimicrobial prescriptions across the Trust necessitates robust, reproducible mechanisms for tracking expenditure and utilisation patterns. Manual approaches to antimicrobial surveillance are resource-intensive, subject to human error, and lack the timeliness required to support real-time clinical decision-making.
+
+Reproducible Analytical Pipelines (RAP), which leverage open-source data science tools and programming languages such as R [@R-base], offer a transformative approach to antimicrobial surveillance. By automating data extraction, processing, analysis, and reporting, RAP principles enable regular generation of accurate, transparent, and accessible insights into prescribing patterns and costs. This approach facilitates rapid identification of opportunities for stewardship intervention, supports evidence-based resource allocation, and enhances the quality and efficiency of analytical processes.
+
+The present analysis utilises automated data extraction from the hospital electronic health record and pharmacy cost databases to characterise antimicrobial expenditure patterns across Newcastle upon Tyne Hospitals NHS Foundation Trust. The analysis employs R programming [@R-base] and the AMR for R package [@R-AMR] to standardise antimicrobial nomenclature and enable accurate data linkage. By implementing a reproducible analytical pipeline, this work provides a sustainable foundation for ongoing surveillance of antimicrobial prescribing and expenditure, supporting the trust's antimicrobial stewardship objectives.
+
+# Aim
+
+This report aims to analyse antimicrobial expenditure across Newcastle upon Tyne Hospitals NHS Foundation Trust.
+
+The analysis will provide insights into prescribing patterns and associated expenditure to support antimicrobial stewardship initiatives.
+
+# Methods
+
+## Data Sources
+
+**Prescription data** from Oracle Health Millennium (eRecord/Cerner Millennium) were extracted from the Nautilus data warehouse using SQL and R programming.  Each data extract includes information on: current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, and have had a new medication prescribed as an inpatient within the 7 days prior to the query being run.
+
+**Pharmacy cost data (current to October 2025)** were obtained separately, containing antimicrobial names, routes of administration, and cost per dose (£) for systemic antibiotics, antifungals, and antivirals. Costs were not available for some topical preparations including topical antibiotics, antifungals, and antivirals.
+
+## Data Processing
+
+All data extraction, wrangling, analysis, reporting and publication is undertaken by means of [Open-source ](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what-is-open-source/) data science tools, including [R programming](https://nhsrcommunity.com/)(@R-base). 
+
+[RAP (Reproducible Analytical Pipelines)](https://nhsdigital.github.io/rap-community-of-practice/introduction_to_RAP/what_is_RAP/) principles and working practices are applied to support regular, evidence-based clinical decision-making through faster, more robust, and more transparent analytical processes.
+
+The AMR package for R (@R-AMR) was utilised to standardise antimicrobial nomenclature across datasets to facilitate accurate data linkage.
+
+## Analysis Scope
+
+The analysis focused on antimicrobial prescriptions initiated for an indication other than “prophylaxis” within a seven-day period (Tuesday to Tuesday), capturing prescriptions that were due to start during the specified period.
+
+## Data Limitations
+
+- Information regarding prescription cancellations is not available, potentially resulting in seemingly overlapping prescriptions for individual patients where start and end dates coincide.
+
+- Actual drug administration cannot be verified from the prescription data alone.
+
+- Some prescriptions lack both start and end dates; exploratory data analysis shows all these prescriptions are for single-dose ("stat"/"once") antimicrobial administrations.
+
+- Cost data are unavailable for certain antimicrobial preparations.
+
+```{r tbl-missing-costs}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: tbl-missing-costs
+#| tbl-cap: "Antimicrobials with missing cost data"
+
+data_antimicrobial_pool_iv_im_po_not_prophy_scope_costed_missing_costs |> 
+  filter(!is.na(order_name_c_amr)) |> 
+  filter(!is.na(route_of_administration_recoded)) |> 
+  flextable() |> 
+  set_header_labels(
+    order_name_c_amr = "Antimicrobial",
+    route_of_administration_recoded = "Route",
+    drug_form = "Formulation"
+  ) |> 
+  theme_vanilla() |> 
+  autofit()
+```
+
+To simplify analysis: 
+
+- Prescription data were linked with pharmacy cost data based on antimicrobial name and route of administration.
+
+- where multiple costs existed for the same antimicrobial formulation, a single representative cost was selected for each IV and PO preparation. 
+
+This means that, for example, intramuscular (IM) antimicrobial prescriptions appear as IV prescriptions. Furthermore, the costs of paediatric antimicrobial prescriptions are estimated using adult-dose antimicrobial prices, which is may over-estimate the costs of these prescriptions.
+
+# Results
+
+In the 7 day period ending `r format(lubridate::dmy(reports_date), format = "%A %d %B %Y")`, **`r nrow(data_antimicrobial_pool_iv_im_po_not_prophy_scope_costed_total |> distinct(order_id))`** antimicrobial prescriptions were made for **`r nrow(drug_expenditure_summary)`** distinct antimicrobials.
+
+These prescriptions were made out for **`r nrow(data_antimicrobial_pool_iv_im_po_not_prophy_scope_costed_total |> distinct(mrn))`** distinct patients.
+
+## Number of prescriptions per patient
+
+In the 7 day period ending `r format(lubridate::dmy(reports_date), format = "%A %d %B %Y")`, patients were prescribed between **`r n_prescriptions_per_patient |> reframe(range = range(n)) |> pluck(1,1)` and `r n_prescriptions_per_patient |> reframe(range = range(n)) |> pluck(1,2)`** orders for antimicrobials.
+
+## Total expenditure on antimicrobials
+
+In the 7 day period ending `r format(lubridate::dmy(reports_date), format = "%A %d %B %Y")`, total expenditure across all antimicrobials was **£`r total_expenditure_print`**.
+
+The following figure shows the Top 10 most expensive antimicrobials by total expenditure.
+
+```{r p3-top-ten}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p3-top-ten
+#| tbl-cap: "Top 10 Antimicrobials by Total Expenditure"
+p3
+```
+
+The following table shows the total number of orders, cost per dose, cost per day and total expenditure for each antimicrobial.
+
+```{r drug_expenditure_table}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: drug_expenditure_table
+#| tbl-cap: "Expenditure by Antimicrobial"
+drug_expenditure_table
+```
+
+The following figure shows the association between the cost per dose and total number of orders for each antimicrobial.
+
+```{r p2-cost-per-dose-vs-n-orders}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p2-cost-per-dose-vs-n-orders
+#| tbl-cap: "Cost per Dose vs Number of Orders (Scatter Plot)"
+p2
+```
+
+## Total expenditure on antimicrobials, stratified by route of administration
+
+The following figure shows the Top 20 most expensive antimicrobials by total expenditure, stratified by route of administration.
+
+```{r p3_route-top-ten}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p3_route-top-ten
+#| tbl-cap: "Top 10 Antimicrobials by Total Expenditure, Stratified by Route of Administration"
+p3_route
+```
+
+The following table shows the total number of orders, cost per dose, cost per day and total expenditure for each antimicrobial, stratified by route of administration.
+
+```{r drug_expenditure_table_route}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: drug_expenditure_table_route
+#| tbl-cap: "Expenditure by Antimicrobial, Stratified by Route of Administration (table)"
+drug_expenditure_table_route
+```
+
+<!-- The following figure shows the total expenditure for each antimicrobial, stratified by route of administration. -->
+
+<!-- ```{r p1_route-top-ten} -->
+<!-- #| eval: true -->
+<!-- #| include: true -->
+<!-- #| echo: false -->
+<!-- #| error: false -->
+<!-- #| message: false -->
+<!-- #| label: p1_route-top-ten -->
+<!-- #| tbl-cap: "Expenditure by Antimicrobial, Stratified by Route of Administration (figure)" -->
+<!-- p1_route -->
+<!-- ``` -->
+
+Of the £`r total_expenditure_print` spent on antimicrobials, **£`r total_expenditure_iv_print` (`r total_expenditure_iv_perc_print`%)** was spent on IV antimicrobials
+
+```{r p3_route_recoded}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p3_route_recoded
+#| tbl-cap: "Expenditure by Antimicrobial Route of Administration (table)"
+p3_route_recoded
+```
+
+The following figure plots the mean cost per dose against the total number of orders for both IV and PO antimicrobials.   
+
+```{r p2_route_recoded-cost-per-dose-vs-n-orders}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p2_route_recoded-cost-per-dose-vs-n-orders
+#| tbl-cap: "Cost per Dose vs Number of Orders (Scatter Plot), by Route of Administration"
+p2_route_recoded
+```
+
+## Total expenditure by antimicrobial class
+
+In the 7 day period ending `r format(lubridate::dmy(reports_date), format = "%A %d %B %Y")`, patients had antimicrobials from `r nrow(drug_expenditure_summary_class)` different classes prescribed.
+
+The following figure shows the Top 10 most expensive antimicrobial classes by total expenditure.
+
+```{r p3_class-top-ten}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p3_class-top-ten
+#| tbl-cap: "Top 10 Antimicrobial Classes by Total Expenditure"
+p3_class
+```
+
+The following table shows the total number of orders, cost per dose, cost per day and total expenditure for each antimicrobial class.
+
+```{r drug_expenditure_table_class}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: drug_expenditure_table_class
+#| tbl-cap: "Expenditure by Antimicrobial Class"
+drug_expenditure_table_class
+```
+
+The following figure shows the association between the cost per dose and total number of orders for each antimicrobial class.
+
+`r drug_expenditure_summary_class$class[which.max(drug_expenditure_summary_class$class_total_orders)]` accounted for a total of `r max(drug_expenditure_summary_class$class_total_orders)` orders.
+
+```{r p2_class-cost-per-dose-vs-n-orders}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p2_class-cost-per-dose-vs-n-orders
+#| tbl-cap: "Mean Cost per Dose vs Number of Orders (Scatter Plot)"
+p2_class
+```
+
+## Total antimicrobial expenditure by ward
+
+In the 7 day period ending `r format(lubridate::dmy(reports_date), format = "%A %d %B %Y")`, antimicrobials were prescribed on `r nrow(drug_expenditure_summary_ward)` different wards.
+
+The following figure shows the Top 10 wards by total expenditure.
+
+```{r p3_ward-top-ten}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p3_ward-top-ten
+#| tbl-cap: "Top 10 Wards by Total Expenditure on Antimicrobials"
+p3_ward
+```
+
+The following table shows the total number of orders, cost per dose, cost per day and total expenditure for each ward.
+
+```{r drug_expenditure_table_ward}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: drug_expenditure_table_ward
+#| tbl-cap: "Expenditure on Antimicrobials by Ward"
+drug_expenditure_table_ward
+```
+
+The following figure shows the association between the cost per dose and total number of orders for each ward.
+
+```{r p2_ward-cost-per-dose-vs-n-orders}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: p2_ward-cost-per-dose-vs-n-orders
+#| tbl-cap: "Mean Cost per Dose vs Number of Orders (Scatter Plot)"
+p2_ward
+```
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
+
+<!-- # Appendix {.unnumbered} -->
+
+```{r beepr_finished}
+beepr::beep(3)
+```

@@ -1,0 +1,282 @@
+---
+title: "MRSA data analysis" 
+subtitle: "Automated Analysis of Antimicrobial Prescriptions for MRSA-Positive Patients using R" 
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+# date: "`r format(Sys.time(), '%a %B %d %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html
+    grid: # There are four variables to control the four components of the layout: the sidebar, the body, the margin, and the gutters.
+      sidebar-width: 10px # 250px (sidebar is on left)
+      body-width: 1000px # 800px
+      margin-width: 200px # 250px (margin is on right)
+      gutter-width: 1.0em # 1.5em
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 2 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - brand #default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    - mystyle.scss
+
+# #Some options need to be set in format > docx
+# format:
+#   docx:
+#     reference-doc: word-styles-reference-01.docx #Word document that will be used as a style reference in producing final docx (Word) document
+#     toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+#     toc-depth: 1 #Specify the number of section levels to include in the table of contents. The default is 3
+#     toc-title: 'Table of Contents' #The title used for the table of contents.
+#     page-width: 6.5 #Target page width for output (used to compute columns widths for layout divs). Defaults to 6.5 inches, which corresponds to default letter page settings in docx and odt.
+#     fig-path: 'figures/'
+#     fig-width: 5 #default is 7
+#     fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+#     # fig-height: 6 #default is 7
+#     fig-align: 'center' #Possible values are default, left, right, and center.
+#     fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+#     fig-cap-location: 'top' #top bottom or margin
+#     fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+#     df-print: default #kable, tibble or paged. The default printing method is kable.
+
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  #Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: true
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+
+# parameters for report
+
+params:
+  param1: "NA"
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import
+
+# data import -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - read database.R")
+```
+
+```{r wrangle - 03_wrangle - merge_data_to_create_antimicrobial_pool.R}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle-merge_data_to_create_antimicrobial_pool
+
+source("./01_src/03_wrangle/03_wrangle - merge_data_to_create_antimicrobial_pool.R")
+```
+
+```{r wrangle - 03_wrangle - point_prevalence_survey.R}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle-point_prevalence_survey
+
+source("./01_src/03_wrangle/03_wrangle - point_prevalence_survey.R")
+```
+
+```{r Apex_MRSA_data_import}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+
+#24 weeks data
+# data import LIMS -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - Apex MRSA data import.R")
+```
+
+```{r Systemic-antibiotics-prescribed-for-patients-with-a-history-of-MRSA-at-NUTH}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: Systemic-antibiotics-prescribed-for-patients-with-a-history-of-MRSA-at-NUTH
+
+source("./01_src/03_wrangle/03_wrangle - Systemic-antibiotics-prescribed-for-patients-with-a-history-of-MRSA-at-NUTH.R")
+```
+
+# Introduction
+
+Antimicrobial resistance (AMR) is a growing global health crisis, posing a significant threat to public health. Methicillin-resistant Staphylococcus aureus (MRSA) is a major cause of healthcare-associated infections (HCAIs). Inappropriate antimicrobial prescribing practices contribute to the emergence and spread of AMR.
+
+To address this issue, automated analysis of laboratory and electronic patient record (EPR) data, using [R programming](https://nhsrcommunity.com/), can provide valuable insights into prescribing patterns and identify potential areas for improvement. By analysing large datasets of patient records, we can identify trends, detect outliers, and assess the appropriateness of antibiotic use.
+
+By extracting relevant EPR data from the Nautilus data warehouse, and microbiology data from the laboratory information management system (LIMS), we can create a comprehensive dataset that facilitates review of antimicrobial prescriptions for patients with a history of isolation of MRSA from any specimen received for culture at The Newcastle Upon Tyne Hospitals NHS Foundation Trust (NUTH). This automated approach will streamline the auditing process and provide valuable insights into antimicrobial prescribing practices.
+
+# Aim
+
+The aim of this project is to develop an [R programming](https://nhsrcommunity.com/)-based automated analysis pipeline to identify and analyse systemic antibiotic prescriptions for patients with a history of MRSA at NUTH. 
+
+This analysis will:
+- help to understand prescribing patterns, 
+- identify potential inappropriate prescribing practices, and 
+- facilitate antimicrobial review in patients with a history of isolation of MRSA, and
+- inform evidence-based interventions to optimise antibiotic use.
+
+# Methods
+
+- The Nautilus data warehouse was interrogated to extract relevant data from the EPR (Oracle Health Millennium, also known as eRecord or Cerner Millennium).
+
+  - Each data extract includes information on: current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, and have had a new medication prescribed as in inpatient within the 7 days prior to the query being run.
+
+- The LIMS was interrogated to extract MRSA microbiological culture data.
+
+  - This includes information on all MRSA isolates from any specimen type received for culture at NUTH between `r mrsa_earliest_date_formatted` and `r mrsa_latest_date_formatted`.
+  
+## Limitations
+
+LIMS and EPR data does not include any historical culture results for patients usually resident outside of the Newcastle area.
+
+For patients usually resident outside of the Newcastle area, historical microbiology results are stored in other data repositories, not accessible through the EPR or LIMS. 
+
+To access historical microbiology results for patients usually resident outside of the Newcastle area, clinicians at NUTH need to access a separate computer system called [OpenICE](https://icedesktop.nuth.nhs.uk/icedesktop/). 
+
+In other words, this method is likely to  underestimate the problem because:
+1.	It excludes patients with a known history of MRSA >24 weeks ago; and
+2.	It excludes patients usually resident outside of Newcastle, with a history of MRSA elsewhere.
+
+# Results
+
+- This report focuses on data extracted on **`r format(ymd(import_date_report), '%A %d %B %Y')`** 
+
+- Earliest admission date for patients in this cohort: **`r format(start_date_admission_dt, "%d %B %Y")`**
+
+- Latest admission date for patients in this cohort: **`r format(end_date_admission_dt, "%d %B %Y")`**
+
+- Total current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any medications, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`: **`r length(data_cohort_admission_wrangled_mrn)`**
+
+- Total current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any antimicrobials, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`: **`r length(data_medications_antimicrobials_mrn)`**
+
+- Total current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any systemically administered (IV/IM/PO) antimicrobials, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`, for an indication other than "prophylaxis": **`r data_antimicrobial_pool_iv_im_po_not_prophy_mrn`**
+
+- Total patients with MRSA isolated from any specimen received for culture at NUTH between `r mrsa_earliest_date_formatted` and `r mrsa_latest_date_formatted`: **`r mrsa_pos_pt_total`**
+
+- Total patients with MRSA isolated from any specimen received for culture at NUTH between `r mrsa_earliest_date_formatted` and `r mrsa_latest_date_formatted`, who are current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any systemically administered (IV/IM/PO) antimicrobials, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`, for an indication other than "prophylaxis": **`r mrsa_pos_mrn_rx_iv_im_antimicrobials_total`**
+
+- Percentage of current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any systemically administered (IV/IM/PO) antimicrobials, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`, for an indication other than "prophylaxis", who have had MRSA isolated from any specimen received for culture at NUTH between `r mrsa_earliest_date_formatted` and `r mrsa_latest_date_formatted`: **`r mrsa_pos_mrn_rx_iv_im_antimicrobials_perc`%**
+
+# Interactive table
+
+Line list of current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any systemically administered (IV/IM/PO) **beta-lactam** antimicrobials, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`, for an indication other than "prophylaxis", **after** having had MRSA isolated from any specimen received for culture at NUTH between `r mrsa_earliest_date_formatted` and `r mrsa_latest_date_formatted`.
+
+Of note, this line list:
+
+- only includes antimicrobial prescriptions that include the drug frequency; and
+
+- includes every version of each drug prescription; e.g. both stat/once-only AND regular prescriptions; and prescriptions where the route of administration/dose/duration/indication/etc.. has been modified (e.g. IV to oral switches).
+
+```{r data_antimicrobial_syst_mrsa_for_table_dedup}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_antimicrobial_syst_mrsa_for_table_dedup
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "initials", "indication", "fin")
+interactive_table(data_antimicrobial_syst_mrsa_for_table_dedup, nrow = 5, not_as_factor = not_as_factor)
+```
+
+
+<!-- ## References {.unnumbered} -->
+
+<!-- ::: {#refs} -->
+<!-- ::: -->
+
+<!-- # Appendix {.unnumbered} -->
+
+```{r beepr_finished}
+beepr::beep(3)
+```

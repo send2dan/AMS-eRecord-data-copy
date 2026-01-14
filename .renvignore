@@ -1,0 +1,33 @@
+# Create a .renvignore file in your project root (C:/Users/Weiandd2/Documents/AMS-eRecord-data2/) to exclude directories and files that don't contain R code
+
+# Data directories
+logo/
+images/
+fonts/
+email_images/
+_site/
+.quarto/
+02_data/
+02_data_output/
+2025 ILM Audit and QI meeting 17th December 2025/
+BMJ Open Quality MRSA screening compliance manuscript/
+10_archive/
+
+# ignore only data folders from the root of the project
+/data/
+/render_output_holding/
+
+# Archive files
+
+
+# RStudio files
+.Rproj.user/
+*.Rproj
+
+# Output files
+*.html
+*.pdf
+*.docx
+
+# ignore all R Markdown files
+*.Rmd

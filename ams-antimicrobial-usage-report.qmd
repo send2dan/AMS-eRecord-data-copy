@@ -1,0 +1,317 @@
+---
+title: "Prescribing data analysis" 
+subtitle: "Automated Analysis of Antimicrobial Prescriptions using R" 
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+# date: "`r format(Sys.time(), '%a %B %d %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html 
+    grid: # There are four variables to control the four components of the layout: the sidebar, the body, the margin, and the gutters.
+      sidebar-width: 10px # 250px (sidebar is on left)
+      body-width: 1000px # 800px
+      margin-width: 200px # 250px (margin is on right)
+      gutter-width: 1.0em # 1.5em
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 2 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  #Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: true
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+
+# parameters for report
+
+params:
+  param1: "NA"
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import
+
+# data import -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - read database.R")
+```
+
+```{r wrangle - 03_wrangle - merge_data_to_create_antimicrobial_pool.R}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle-merge_data_to_create_antimicrobial_pool
+
+source("./01_src/03_wrangle/03_wrangle - merge_data_to_create_antimicrobial_pool.R")
+```
+
+```{r wrangle - 03_wrangle - point_prevalence_survey.R}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle-point_prevalence_survey
+
+source("./01_src/03_wrangle/03_wrangle - point_prevalence_survey.R")
+```
+
+# Introduction
+
+This analysis aims to facilitate antimicrobial review across The Newcastle Upon Tyne Hospitals NHS Foundation Trust using [R programming](https://nhsrcommunity.com/). 
+
+By extracting relevant data from the Nautilus data warehouse, we can create a comprehensive dataset that includes information on a cohort of inpatients with new antimicrobial prescriptions, placed within the past seven days. 
+
+This automated approach will streamline the auditing process and provide valuable insights into antimicrobial prescribing practices.
+
+# Aim
+
+- To emulate and improve on existing Oracle Health Millennium (eRecord) antimicrobial pools.
+
+- To semi-automate the process of undertaking antimicrobial audits.
+
+- To help identify opportunities for de-escalation or discontinuation of antimicrobial therapy.
+
+- To influence antimicrobial stewardship efforts by facilitating surveillance- and clinical review of antimicrobial usage.
+
+- To facilitate evaluation of compliance with local and national antimicrobial prescribing guidelines.
+
+- To semi-automate collection of data that was previously manually collected as part of annual point prevalence surveys of antimicrobial usage.
+
+# Methods
+
+- The Nautilus data warehouse was interrogated to extract relevant data from Oracle Health Millennium (also known as eRecord or Cerner Millennium).
+
+- Each data extract includes information on: current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, and have had a new medication prescribed as an inpatient within the 7 days prior to the query being run.
+
+# Results
+
+- This report focuses on data extracted on **`r format(ymd(import_date_report), '%A %d %B %Y')`** 
+
+- Earliest admission date for patients in this cohort: **`r format(start_date_admission_dt, "%d %B %Y")`**
+
+- Latest admission date for patients in this cohort: **`r format(end_date_admission_dt, "%d %B %Y")`**
+
+- Total current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any medications, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`: **`r length(data_cohort_admission_wrangled_mrn)`**
+
+- Total current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any antimicrobials, in hospital, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`, for an indication other than “prophylaxis”: **`r length(data_medications_antimicrobials_mrn)`**
+
+## Age-related data
+
+Age of current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any antimicrobials, in hospital, in the 7 days prior to: `r format(ymd(import_date_report), '%A %d %B %Y')`, for an indication other than “prophylaxis”.
+
+```{r age_histogram}
+#| fig-width: 9
+
+# histogram age
+data_antimicrobial_pool %>%
+  distinct(mrn, .keep_all = TRUE) |>
+  filter(!is.na(age_on_admission)) %>%
+  ggplot(aes(x = age_on_admission)) +
+  geom_histogram(bins = 20) +
+  theme_minimal() +
+  labs(
+    title = "Age of inpatients prescribed antimicrobials",
+    subtitle = glue::glue("Data for inpatients prescribed antimicrobials, in hospital, in the 7 days prior to {date}",
+      date = format(ymd(import_date_report), "%A %d %B %Y")
+    ),
+    x = "Age on admission",
+    y = "n"
+  )
+```
+
+## Antimicrobial usage
+
+Figure showing percentage of patients prescribed antimicrobials, per ward. 
+
+Of note, patients' latest inpatient location may not reflect the location of antimicrobial prescription (e.g. many antimicrobials are prescribed in ED and AS for inpatients who subsequently move to other wards across the Trust).
+
+For each ward, the denominator data includes current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, prescribed any medication, in hospital, in the 7 days prior to: `r format(ymd(import_date_report), '%A %d %B %Y')`.
+
+Data restricted to include only wards with *both*:
+
+- More than the median percentage of patients prescribed IV/IM/PO antimicrobials; and
+
+- More than 4 patients prescribed IV/IM/PO antimicrobials.
+
+```{r perc_pt_with_antimicrobial_rx_per_ward}
+#| fig-width: 9
+
+# Calc perc pt with antimicrobial rx per ward -----------------------------
+## excl prophylactic antimicrobials
+## only including IV/IM/PO antimicrobials
+## only incl wards with more than the median percentage of patients Rx IV/IM/PO antimicrobials and >4 patients Rx IV/IM/PO antimicrobials
+
+perc_pt_on_rx_per_ward_restricted |>
+  filter(!is.na(perc_pt_on_rx_per_ward)) |>
+  ggplot() +
+  geom_col(aes(fct_reorder(current_ward, perc_pt_on_rx_per_ward, .na_rm = FALSE), perc_pt_on_rx_per_ward)) +
+  geom_hline(
+    yintercept = unique(perc_pt_on_rx_per_ward$median_perc_pt_on_rx_per_ward),
+    color = "red",
+    linetype = 2
+  ) +
+  coord_flip() +
+  # theme(axis.text.y = element_text(angle = 45, hjust = 1)) +
+  # theme(aspect.ratio = 0.5) + # Adjust the aspect ratio as needed to make figure taller
+  # theme(axis.text.y = element_text(size = 6)) +  # Reduce X-axis text size to 8
+  labs(
+    x = "Ward",
+    y = "Patients prescribed antimicrobials (%)\nIncluding median percentage patients prescribed antimicrobials across all wards (red dotted line)",
+    title = "Percentage of Patients prescribed Antimicrobials per Ward",
+    subtitle = glue::glue('Data for inpatients prescribed IV/IM/PO antimicrobials, in hospital, \nin the 7 days prior to {date},\nexcluding antimicrobial prescriptions with indication mentioning "Prophylaxis"',
+      date = format(ymd(import_date_report), "%A %d %B %Y")
+    )
+  )
+```
+
+<!-- ## Antimicrobial usage (percentage; table) -->
+
+<!-- Table showing percentage of patients prescribed antimicrobials, per ward. -->
+
+<!-- ```{r perc_pt_with_antimicrobial_rx_per_ward_table} -->
+<!-- #| eval: true -->
+<!-- #| include: true -->
+<!-- #| echo: false -->
+<!-- #| error: false -->
+<!-- #| message: false -->
+<!-- #| label: perc_pt_with_antimicrobial_rx_per_ward_table -->
+
+<!-- # Create table to share --------------------------------------------------- -->
+
+<!-- perc_pt_on_rx_per_ward |>  -->
+<!--   arrange(desc(n_pt_on_rx)) |>  -->
+<!--   select(-median_perc_pt_on_rx_per_ward) |>  -->
+<!--   mutate(perc_pt_on_rx_per_ward = round(perc_pt_on_rx_per_ward, digits = 1)) |>  -->
+<!--   rename(ward = current_ward, -->
+<!--          `Patients on ward` = n_pt_on_ward, -->
+<!--          `Patients Rx antimicrobials` = n_pt_on_rx, -->
+<!--          `% Patients Rx antimicrobials` = perc_pt_on_rx_per_ward) |>  -->
+<!--   interactive_table()  -->
+
+
+<!-- ``` -->
+
+# Interactive table
+
+Line list of antimicrobial prescriptions for an indication other than “prophylaxis”, placed within the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`, for current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours.
+
+Of note, this line list:
+
+- only includes antimicrobial prescriptions that include the drug frequency; and
+
+- includes every version of each drug prescription; e.g. both stat/once-only AND regular prescriptions; and prescriptions where the route of administration/dose/duration/indication/etc.. has been modified (e.g. IV to oral switches).
+
+```{r data_antimicrobial_pool_for_table}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_antimicrobial_pool_for_table
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "initials", "indication", "fin")
+interactive_table(data_antimicrobial_pool_for_table_dedup, nrow = 5, not_as_factor = not_as_factor)
+```
+
+
+<!-- ## References {.unnumbered} -->
+
+<!-- ::: {#refs} -->
+<!-- ::: -->
+
+<!-- # Appendix {.unnumbered} -->
+
+```{r beepr_finished}
+beepr::beep(3)
+```

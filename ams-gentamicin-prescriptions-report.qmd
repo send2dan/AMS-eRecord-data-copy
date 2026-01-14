@@ -1,0 +1,516 @@
+---
+title: "Gentamicin data analysis" 
+subtitle: "Automated Analysis of Gentamicin Prescriptions using R" 
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+# date: "`r format(Sys.time(), '%a %B %d %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html 
+    grid: # There are four variables to control the four components of the layout: the sidebar, the body, the margin, and the gutters.
+      sidebar-width: 10px # 250px (sidebar is on left)
+      body-width: 1000px # 800px
+      margin-width: 200px # 250px (margin is on right)
+      gutter-width: 1.0em # 1.5em
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 3 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+    
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  #Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: true
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+
+# parameters for report
+
+params:
+  param1: "NA"
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: project setup
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: wrangle
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import_EPR}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import_EPR
+
+# data_import_EPR -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - read database.R")
+```
+
+```{r data_import_genetics}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_import_genetics
+
+# data_import_genetics -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - Read genetics database - MTRNR1 variants.R")
+```
+
+```{r merge_data_to_create_antimicrobial_pool}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: merge_data_to_create_antimicrobial_pool
+
+source("./01_src/03_wrangle/03_wrangle - merge_data_to_create_antimicrobial_pool.R")
+```
+
+```{r point_prevalence_survey}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: point_prevalence_survey
+
+source("./01_src/03_wrangle/03_wrangle - point_prevalence_survey.R")
+```
+
+```{r gentamicin_dosing_weight_height_sex}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: gentamicin_dosing_weight_height_sex
+
+source("./01_src/03_wrangle/03_wrangle - gentamicin_dosing_weight_height_sex_2.R")
+```
+
+```{r wrangle - 03_wrangle - gentamicin_MTRNR1_variants}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+#| label: gentamicin_MTRNR1_variants
+
+source("./01_src/03_wrangle/03_wrangle - gentamicin_MTRNR1_variants.R")
+```
+
+# Introduction
+
+Gentamicin is a widely used aminoglycoside antibiotic with a narrow therapeutic window, requiring careful dosing to optimise efficacy whilst minimising nephrotoxicity and ototoxicity. Appropriate dosing is particularly critical given the drug's concentration-dependent bactericidal activity and potential for serious adverse effects. Traditional manual auditing of gentamicin prescriptions is time-intensive and may not capture real-time prescribing patterns across large healthcare organisations.
+
+This analysis leverages automated data extraction and [R programming](https://nhsrcommunity.com/) to facilitate comprehensive review of systemically-administered gentamicin prescriptions across The Newcastle upon Tyne Hospitals NHS Foundation Trust (NUTH). By interrogating the Nautilus Data Warehouse (DWH), we can systematically evaluate prescribing practices, identify dosing discrepancies, and monitor compliance with evidence-based dosing guidelines. This approach enables continuous quality improvement in antimicrobial stewardship and patient safety.
+
+# Aim
+
+- To review and analyse systemically-administered gentamicin prescriptions for inpatients across The Newcastle upon Tyne Hospitals NHS Foundation Trust.
+
+- To evaluate dosing accuracy against evidence-based recommendations.
+
+- To identify patterns in prescribing practices to support antimicrobial stewardship initiatives.
+
+# Methods
+
+- The Nautilus data warehouse was interrogated to extract relevant data from Oracle Health Millennium (also known as the EPR, eRecord or Cerner Millennium).
+
+  - Each data extract includes information on: current inpatients at RVI, FH, GNCH and NCCC, who have been in hospital at least 24 hours, and have had a new medication prescribed as an inpatient within the 7 days prior to the query being run.
+
+- In addition, the Genetics Laboratory Information Management System (LIMS) was interrogated to extract data on all patients with MRN numbers who have been tested for particular mutations (MT-RNR1 variants: m.1555A>G; m.1095T>C; m.1494C>T). Patients with these mutations face significantly increased risk of rapid-onset bilateral hearing loss following aminoglycoside administration at normal therapeutic levels (@Estivill_1998; @Estivill_1998_2; @SPS_pharmacogenomic_testing_for_aminoglycosides; @McDermott_2021).  
+
+## Gentamicin dosing calculations
+
+EUCAST (@eucast_breakpoints_dosing) recommends dosing gentamicin at 6-7 mg/kg. 
+
+However, evidence suggests that using actual body weight may not be safe in patients towards the lower and upper extremes of weight (@Wurtz_1997; @Manjaly_2012; @Traynor_1995).
+
+Therefore, as ratified by the Trust's Antimicrobial Steering Group (AMSG), gentamicin should be dosed according to Ideal Body Weight (IBW), using average height by gender (@ONS_average) and the calculator recommended by the BNF (@BNF_Prescribing_in_renal_impairment).  
+
+**Ideal Body Weight (IBW) Calculation:**
+
+For patients aged >16 years, where a patient's weight has been recorded, their maximum recorded weight is used to calculate Ideal Body Weight (IBW), using the following calculation:
+
+IBW (kilograms) = Constant + 0.91 (Height - 152.4)		
+
+  - Where Constant = 50 for men & 45.5 for women
+
+**Mathematically Corrected IBW:**
+
+Where IBW has been calculated for each patient >16 years old, this has been used to calculate the Mathematically Corrected Ideal Body Weight (IBW) to determine the optimal gentamicin dose (mg), rounded to the nearest 40mg, using the following calculations:
+
+For *Underweight* patients (@Traynor_1995) = total body weight (TBW) x 1.13
+
+For *Overweight* patients (@Wurtz_1997) = 0.43(excess body weight (EBW)) + IBW 
+  
+  - Where EBW = TBW - IBW, reflected by [max weight] - IBW 
+
+**Recommended Gentamicin Dose:**
+
+*Gentamicin dose (mg) (@eucast_breakpoints_dosing)* = 7 x Mathematically Corrected IBW
+
+*Rounded gentamicin dose (mg)* = 7 x Mathematically Corrected IBW rounded to nearest 40mg
+
+## Limitations
+
+**Documentation vs. Administration Gap**: Documented prescriptions do not guarantee actual drug administration, as orders may be cancelled after entry without this being reflected in the EPR data used for this analysis.
+
+**Incomplete Dosing Information**: Gentamicin prescriptions recorded in anaesthetic charts lack detailed dosing information, complicating assessment and review of total gentamicin usage.
+
+**Clinical Context Limitations**: The analysis cannot account for clinical factors that may justify deviation from standard dosing recommendations, such as:
+
+  - Renal impairment requiring dose adjustment
+
+  - Infection severity or site-specific considerations
+
+  - Therapeutic drug monitoring (TDM) results
+
+  - Patient-specific contraindications
+
+**Temporal Snapshot**: Data represents a single 7-day period, which may not reflect repeated, prolonged and/or long-term prescribing trends or seasonal variations.
+
+**Weight and Height Data Quality**: Calculations depend on accurate patient data, which may be outdated or inaccurate in some cases.
+
+**Paediatric Exclusion**: Analysis excludes patients ≤16 years, limiting applicability to paediatric prescribing practices.
+
+**Genetic Risk Factors**: The analysis does not capture patients who may have increased susceptibility to aminoglycoside-induced ototoxicity due to genetic variants, e.g. m.1555A>G (MTRNR1) mutation.
+
+# Results
+
+Data extracted on **`r format(ymd(import_date_report), '%A %d %B %Y')`**:
+
+Admission date range:
+
+- Earliest admission: **`r format(start_date_admission_dt, "%d %B %Y")`**
+
+- Latest admission: **`r format(end_date_admission_dt, "%d %B %Y")`**
+
+Medications prescribed:
+
+- Inpatients (RVI, FH, GNCH, NCCC, ≥24h), prescribed *any* medications (past 7 days): **`r length(data_cohort_admission_wrangled_mrn)`**
+
+- Inpatients (same), prescribed *antimicrobials*: **`r length(data_medications_antimicrobials_mrn)`**
+
+- Inpatients (same), prescribed *gentamicin*: **`r length(data_antimicrobial_pool_gentamicin_clin_rec |> distinct(mrn) |> pull(mrn))`**
+
+## Gentamicin dosing analysis
+
+### Comparison of prescribed vs. recommended dose 
+
+The following figures show the difference in dosage (in milligrams) between the prescribed dose of gentamicin and the recommended dosage (based on the calculations outlined in the Methods section), in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`.
+
+#### Histogram
+
+```{r plot_dose_comparison_hist}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+plot_dose_comparison_hist
+```
+
+#### Scatter plot
+
+```{r plot_dose_comparison_scatter}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+plot_dose_comparison_scatter
+```
+
+#### Categorical analysis
+
+```{r plot_dose_comparison_breakdown}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+plot_dose_comparison_breakdown
+```
+
+### Dose difference vs. weight
+
+The following figure shows the difference in dose (in milligrams) between the prescribed dose of gentamicin and the recommended dosage (based on the calculations outlined in the Methods section), compared with patients' recorded weights, in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`. A negative dose difference implies underdosing, whereas a positive dose difference implies overdosing.
+
+- Mean gentamicin dose difference: `r round(dose_summary$mean_difference, 1)` mg.
+
+- Median gentamicin dose difference: `r round(dose_summary$median_difference, 1)` mg.
+
+####  Scatter plot
+
+```{r plot_weight_dose_diff}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+plot_weight_dose_diff
+```
+
+### Doses prescribed per patient
+
+The following figure shows the number of patients prescribed multiple doses of gentamicin in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`.
+
+```{r plot_multiple_doses}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+plot_multiple_doses
+```
+
+#### Time between doses
+
+The following figure shows the time (in hours) between prescription start date/times for patients prescribed multiple doses of gentamicin in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`.
+
+```{r plot_time_between_doses}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+plot_time_between_doses
+```
+
+#### Doses prescribed <24 hours apart
+
+The following table details the time (in hours) between doses for patients prescribed multiple doses of gentamicin <24 hours apart in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`.
+
+```{r time_between_doses_table_less_than_24h}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: time_between_doses_table_less_than_24h
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "nhs number", "fin", "initials", "indication")
+interactive_table(time_between_doses_table_less_than_24h, nrow = 5, not_as_factor = not_as_factor)
+```
+
+# Interactive table
+
+## Patient prescribed gentamicin
+
+The following interactive table includes the maximum weight, height, and creatinine for each patient prescribed gentamicin in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`, as well as information on gentamicin dosing (including clinical indication), and clinical parameters (incl max. CRP and max temperature).
+
+```{r data_antimicrobial_pool_gentamicin_clin_rec}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: data_antimicrobial_pool_gentamicin_clin_rec
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "nhs number", "fin", "initials", "indication")
+interactive_table(data_antimicrobial_pool_gentamicin_clin_rec_table, nrow = 5, not_as_factor = not_as_factor)
+```
+
+## Patient prescribed multiple doses of gentamicin
+
+For the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`:
+
+- Distinct patients prescribed multiple doses of gentamicin `r multiple_summary$patients_multiple_doses` (`r round(multiple_summary$patients_multiple_doses/multiple_summary$total_patients*100, 1)`%).
+
+- Maximum doses of gentamicin prescribed per patient: `r multiple_summary$max_doses`.
+
+- Mean time between doses per patient: `r round(time_summary$mean_hours, 1)` hours. 
+
+- Median time between doses per patient: `r round(time_summary$median_hours, 1)` hours. 
+
+- Range in time between doses per patient:`r time_summary$min_hours` - `r time_summary$max_hours` hours.
+
+The following table provides further details of patients prescribed multiple doses of gentamicin in the 7 days prior to `r format(ymd(import_date_report), '%A %d %B %Y')`.
+
+```{r patient_summary_multiple_gent_doses}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: patient_summary_multiple_gent_doses
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "nhs number", "fin", "initials", "indication")
+interactive_table(patient_summary_multiple_gent_doses, nrow = 5, not_as_factor = not_as_factor)
+```
+
+
+# Pharmacogenetics analysis
+
+## Testing for MTRNR1 variants
+
+It is known that patients carrying particular mutations (MT-RNR1 variants: m.1555A>G; m.1095T>C; m.1494C>T) face significantly increased risk of rapid-onset bilateral hearing loss following aminoglycoside administration at normal therapeutic levels (@Estivill_1998; @Estivill_1998_2; @SPS_pharmacogenomic_testing_for_aminoglycosides; @McDermott_2021). 
+
+Aminoglycosides should be avoided for patients with one of these variants, unless the risk of permanent hearing loss is outweighed by the severity of infection and the lack of safe or effective alternative antimicrobial therapies (@GeNotes_2025). 1555A>G is by far the most common MT-RNR1 variant, and therefore the most clinically relevant, with a population prevalence of around **1 in 500** in the UK (@GeNotes_2025). 
+
+Screening for MTRNR1 variants has been in the NHS England test directory since 2016. 
+
+Since `r format(data_mtrnr1_dates[[1]][1], '%a %B %d %Y')`, `r data_mtrnr1_n_tests` requests for MT-RNR1 variant testing have been received. Of these requests, `r mtrnr1_pos_n` (`r round(mtrnr1_pos_n/data_mtrnr1_n_tests*100, 1)`%) led to a significant test result ("hom").
+
+The following plot shows the number of test requests received per month, since Jan 2024. 
+
+```{r plot_mtrnr1_tests_per_month}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: plot_mtrnr1_tests_per_month
+
+plot_mtrnr1_tests_per_month
+```
+
+### Patients with an MRN
+
+Many patients tested for MT-RNR1 variant at the Centre for Life are actually resident elsewhere, outside of the Newcastle area, and have never previously been admitted to NUTH for inpatient treatment. Therefore, a subanalysis of the total genetics data was undertaken to find patients with an MRN number, as these patients are likely to have received care at NUTH at some point in the past. 
+
+Considering only patients with an MRN, since `r format(data_mtrnr1_dates[[1]][1], '%a %d %B %Y')`, `r data_mtrnr1_n_tested_with_mrn` distinct patients have been tested for MTRNR1 variants. Of these patients, `r mtrnr1_pos_n_with_mrn` (`r round(mtrnr1_pos_n_with_mrn/data_mtrnr1_n_tested_with_mrn*100, 1)`%) had a significant test result ("hom").
+
+### Patients with an MRN prescribed gentamicin
+
+For the week of `r format(ymd(import_date_report), '%A %B %d %Y')`, `r gentamicin_mrn_n` distinct patients with an MRN were prescribed gentamicin. Of these patients, `r mtrnr1_tested_n_with_mrn` (`r round(mtrnr1_tested_n_with_mrn/gentamicin_mrn_n, 1)`%) have ever been tested for MTRNR1 variants.
+
+# Conclusions
+
+This automated analysis of gentamicin prescribing practices across Newcastle upon Tyne Hospitals NHS Foundation Trust reveals significant opportunities for dosing optimisation. The automated analysis framework demonstrated here provides a scalable approach for ongoing antimicrobial stewardship monitoring and can be adapted for other high-risk medications.
+
+The mean dose difference of `r round(dose_summary$mean_difference, 1)` mg suggests systematic underdosing, with a median difference of `r round(dose_summary$median_difference, 1)` mg indicating this pattern affects the majority of patients. This underdosing trend is concerning as it may compromise therapeutic efficacy and could potentially contribute to antimicrobial resistance.
+
+The analysis identified `r length(data_antimicrobial_pool_gentamicin_clin_rec |> distinct(mrn) |> pull(mrn))` patients prescribed gentamicin over the 7-day period, representing `r round(length(data_antimicrobial_pool_gentamicin_clin_rec |> distinct(mrn) |> pull(mrn)) / length(data_medications_antimicrobials_mrn) * 100, 1)`% of patients receiving antimicrobials. 
+
+Notably, `r round(multiple_summary$patients_multiple_doses/multiple_summary$total_patients*100, 1)`% of patients received multiple gentamicin doses, with considerable variation in dosing intervals, suggesting inconsistent dosing behaviours.
+
+Finally, the maximum number of doses given to a single patient over the 7-day period was `r multiple_summary$max_doses`. It is known that patients carrying particular mutations (MT-RNR1 variants: m.1555A>G; m.1095T>C; m.1494C>T) face significantly increased risk of rapid-onset bilateral hearing loss following aminoglycoside administration at normal therapeutic levels (@Estivill_1998; @Estivill_1998_2; @SPS_pharmacogenomic_testing_for_aminoglycosides; @McDermott_2021). Aminoglycosides should be avoided for patients with one of these variants, unless the risk of permanent hearing loss is outweighed by the severity of infection and the lack of safe or effective alternative antimicrobial therapies (@GeNotes_2025). 1555A>G is by far the most common MT-RNR1 variant, and therefore the most clinically relevant, with a population prevalence of around 1 in 500 in the UK (@GeNotes_2025). 
+
+Section R65 of NHS England's Testing Criteria for Rare and Inherited Disease (@NHS_England_test_directory; @Testing_Criteria_for_Rare_and_Inherited_Disease) outline that patients can undergo genetic screening for the indication of: "Aminoglycoside exposure posing risk to hearing". As of June 2025, this includes:
+
+1. individuals with a predisposition to gram negative infections for example due to known respiratory disease (e.g. bronchiectasis, cystic fibrosis) or due to structural or voiding genitourinary tract disorders,
+  
+OR
+
+2. individuals with hearing loss who have been exposed to aminoglycosides
+
+Referrals for testing will be triaged by the Genomic Laboratory; testing should be targeted at those where a genetic or genomic diagnosis will guide management for the proband or family.
+
+# Recommendations
+
+Recommended Actions for the Trust's Antimicrobial Steering Group:
+
+  - Review and update gentamicin dosing protocols to address systematic underdosing
+
+  - Implement automated dosing calculators in prescribing systems
+
+  - Address variable adherence to conventional dosing intervals by standardising dosing intervals and providing clear guidance on therapeutic drug monitoring (TDM)
+
+  - Enhance prescriber education 
+  
+  - Consider systematic genetic screening for e.g. m.1555A>G (MTRNR1) mutation, particularly in patients needing recurrent or long-term treatment
+  
+    - Establish pathway for genetic screening discussion with genetics team for patients requiring recurrent/long-term aminoglycosides (particularly the `r round(multiple_summary$patients_multiple_doses/multiple_summary$total_patients*100, 1)`% multiple-dose cohort) 
+
+  - Implement regular automated audit cycles using this framework
+  
+  - Future automated analyses should incorporate clinical outcomes data, therapeutic drug monitoring (TDM) results, genetic screening information where available, and longer observation periods to better understand the clinical impact of dosing variations and guide targeted interventions.
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
+
+<!-- # Appendix {.unnumbered} -->
+
+```{r beepr_finished}
+beepr::beep(3)
+```

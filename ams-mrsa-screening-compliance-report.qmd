@@ -1,0 +1,650 @@
+---
+title: "Automated Analysis of MRSA Screening Compliance using R" 
+#subtitle: "XXX" 
+institute: "Newcastle upon Tyne Hospitals NHS Foundation Trust"
+author: "Daniel Weiand; Jamie Lupton; Peta Leroux" 
+#date: "`r format(Sys.time(), '%a %B %d %Y')`"
+date: today
+date-format: "dddd, D MMMM YYYY"
+self-contained: true
+
+#Some options need to be set in format > html
+format:
+  html:
+    #output-file: 'file' #Output file to write to
+    #output-ext: #Extension to use for generated output file
+    page-layout: full # By default Quarto HTML documents display content centered at a width optimized for readability (typically from 600px to 900px wide). https://quarto.org/docs/output-formats/page-layout.html
+    grid: # There are four variables to control the four components of the layout: the sidebar, the body, the margin, and the gutters.
+      sidebar-width: 10px # 250px (sidebar is on left)
+      body-width: 1000px # 800px
+      margin-width: 200px # 250px (margin is on right)
+      gutter-width: 1.0em # 1.5em
+    code-fold: false
+    code_download: true
+    embed-resources: true
+    standalone: true
+    toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+    toc-depth: 2 #Specify the number of section levels to include in the table of contents. The default is 3
+    toc_float: TRUE
+    highlight-style: pygments
+    fig-path: 'figures/'
+    #fig-width: 9 #default is 7
+    fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+    # fig-height: 6 #default is 7
+    fig-align: 'left' #Possible values are default, left, right, and center.
+    fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+    fig-cap-location: 'top' #top bottom or margin
+    fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+    df-print: paged #kable, tibble or paged. The default printing method is kable.
+    theme:
+    - mystyle.scss
+    - default #Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Available themes include: default cerulean cosmo cyborg darkly flatly journal litera lumen lux materia minty morph pulse quartz sandstone simplex sketchy slate solar spacelab superhero united vapor yeti zephyr
+
+# #Some options need to be set in format > docx
+# format:
+#   docx:
+#     reference-doc: word-styles-reference-01.docx #Word document that will be used as a style reference in producing final docx (Word) document
+#     toc: true #Include an automatically generated table of contents. This option has no effect if standalone is false.
+#     toc-depth: 1 #Specify the number of section levels to include in the table of contents. The default is 3
+#     toc-title: 'Table of Contents' #The title used for the table of contents.
+#     page-width: 6.5 #Target page width for output (used to compute columns widths for layout divs). Defaults to 6.5 inches, which corresponds to default letter page settings in docx and odt.
+#     fig-path: 'figures/'
+#     fig-width: 5 #default is 7
+#     fig-asp: 0.618 #When fig-asp is specified, the height of a plot (the option fig-height) is calculated from fig-width * fig-asp (the golden ratio is 0.618).
+#     # fig-height: 6 #default is 7
+#     fig-align: 'center' #Possible values are default, left, right, and center.
+#     fig-format: 'svg' #The graphical device to generate plot files. retina, png, jpeg, svg, or pdf
+#     fig-cap-location: 'top' #top bottom or margin
+#     fig-dpi: 300 #The DPI (dots per inch) for bitmap devices (default = 72)
+#     df-print: default #kable, tibble or paged. The default printing method is kable.
+
+# # Some options need to be set in format > revealjs
+# format:
+#   revealjs:
+#     incremental: true #Incrementally reveal elements https://rstudio-conf-2022.github.io/get-started-quarto/materials/05-presentations.html#/lists
+#     width: 1600
+#     height: 900
+#     #css: ["mystyle.css"]
+#     default-image-extension: png
+#     theme: serif #full list of available themes: beige blood dark default league moon night serif simple sky solarized
+#     slide-level: 2 #to make slides scrollable.. Specifies that any heading with a ## (level 2) will create a new slide. You can adjust the slide-level value to control which heading levels create new slides.
+#     scrollable: true
+#     smaller: true
+#     transition: fade
+#     transition-speed: fast
+#     reference-location: document #If you prefer that footnotes be included at the end of the document, specify the reference-location: document option
+#     logo: Newcastlelaboratories_logo.png
+#     #footer: "Footer text"
+#     menu:
+#       side: left #Navigation Menu location
+#       width: normal    #Navigation Menu width
+#       numbers: true 	#Add slide numbers to menu items.
+#     slide-number: c/t #c/t = Slide number / total slides (default)
+#     show-slide-number: all #all = Show slide numbers in all contexts (default)
+#     embed-resources: true
+#     standalone: true
+
+#Some referencing options need to be set in bibliography:, csl:, and link-citations:
+bibliography: biblio.bib  #Document bibliography (BibTeX or CSL). May be a single file or a list of files
+csl: bmj.csl #Citation Style Language file to use for formatting references.
+link-citations: true
+
+#Some code chunk options need to be set in execute (credit: @rappa753)
+execute:
+  echo: FALSE #Include cell source code in rendered output. 
+  warning: FALSE #If FALSE, all warnings will be printed in the console instead of the output document
+  error: TRUE #By default, the code evaluation will not stop even in case of errors! If we want to stop on errors, we need to set this option to FALSE.
+  message: FALSE #Whether to preserve messages emitted by message() (similar to the option warning
+  cache: FALSE #use the cache option to cache the results of computations. You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option, e.g. [terminal] quarto render mydoc.qmd --cache-refresh # single doc or [terminal] quarto render --cache-refresh # entire project
+
+editor: source
+
+# parameters for report
+
+params:
+  param1: "NA"
+---
+
+```{r project_setup}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+
+source("./01_src/01_startup/01_initialise.R")
+```
+
+```{r functions}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+
+# data import -------------------------------------------------------------
+source("./01_src/functions.R")
+```
+
+```{r data_import_EPR_date}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+
+# data import -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - read database.R")
+```
+
+```{r Apex_MRSA_data_import}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+
+#24 weeks data
+# data import LIMS -------------------------------------------------------------
+source("./01_src/02_data_import/02_data_import - Apex MRSA data import.R")
+```
+
+```{r data_wrangle_Apex_and_EPR_data_to_audit_MRSA_screening_compliance.R}
+#| eval: true
+#| include: false
+#| echo: false
+#| error: false
+#| message: false
+
+# data import -------------------------------------------------------------
+source("./01_src/03_wrangle/03_wrangle - Apex and EPR data to audit MRSA screening compliance.R")
+```
+
+# Introduction
+
+Antimicrobial resistance (AMR) is a growing global health crisis, posing a significant threat to public health. 
+
+Methicillin-resistant Staphylococcus aureus (MRSA) demonstrates intrinsic AMR to flucloxacillin, a commonly prescribed antibiotic, is a major cause of healthcare-associated infections (HCAIs).
+
+It is current Trust policy that all inpatients at Newcastle upon Tyne Hospitals Trust (NUTH) are screened for MRSA either:
+- On admission; and/or
+- Within an 18 week period prior to admission (e.g. in pre-assessment clinic for patients awaiting elective surgery).
+
+MRSA screening is a crucial infection prevention and control measure to reduce the risk of spread of MRSA, including hospital outbreaks.
+
+However, historically, it has not been possible to audit compliance with MRSA screening.  
+
+To address this issue, automated analysis of laboratory and electronic patient record (EPR) data, using [R programming](https://nhsrcommunity.com/), can provide valuable insights into MRSA screening compliance and identify potential areas for improvement. 
+
+Open-source data science tools to analyse the Big Data that we now have at our disposal, we can identify trends, detect outliers, and assess compliance with Trust policy in near-real time. This automated approach will streamline the auditing process, provide valuable insights into antimicrobial prescribing practices, and facilitate early intervention to improve patient care, mitigating against the risk of HCAI MRSA infection and outbreaks.
+
+# Aim
+
+The aim of this project is to develop an [R programming](https://nhsrcommunity.com/)-based automated analysis pipeline to evaluate compliance with MRSA screening practices for current inpatients, in line with current Trust policy. 
+
+This analysis will:
+
+1. Determine the proportion of current inpatients who have had MRSA screen undertaken in the 18 week period preceding admission
+
+2. Categorise current inpatients into:
+   a. Inpatients who have had an MRSA screen undertaken since admission or in the 18 week period preceding admission
+   <!-- b. Inpatients who have not had an MRSA screen undertaken since admission BUT did have one in the 18 week period preceding admission -->
+   b. Inpatients who have not had an MRSA screen undertaken since admission OR in the 18 week period preceding admission
+
+3. Evaluate MRSA screening compliance rates across different hospital areas and patient populations
+
+4. Determine the number of MRSA positive current inpatients 
+
+5. Evaluate the timeliness of MRSA screening relative to patient admission dates
+
+6. Generate automated reports to support infection prevention and control teams in their decision-making
+
+7. Facilitate early intervention to arrange post-hoc screening of current inpatients who were not screened in the 18 week period preceding admission
+
+8. Provide data-driven insights to optimise MRSA screening protocols and resource allocation
+
+9. Create a foundation for future antimicrobial stewardship initiatives using similar automated analysis approaches
+
+# Methods
+
+## Data Sources
+
+1. Electronic Patient Record (EPR) Data
+- Source: Nautilus data warehouse (Oracle Health Millennium/eRecord/Cerner Millennium)
+- Inclusion criteria:
+  * Current inpatient at RVI, FH, GNCH and NCCC
+  * Length of stay ≥24 hours
+  * New inpatient medication prescribed within previous 7 days
+- Exclusion criteria:
+  * To keep the amount of data needed to be extracted from the LIMS manageable, this analysis excludes current inpatients who were admitted to NUTH > 6 weeks ago.
+  * Patients meeting the following MRSA Screening Exemptions.
+
+2. Laboratory Information Management System (LIMS)
+- Source: LIMS interrogated to extract and import data using [SQL](https://www.england.nhs.uk/structured-query-language-sql-statistical-process-control/) and [R programming](https://nhsrcommunity.com/)  
+- Time period: 18 weeks preceding admission
+- Data extracted:
+  * All MRSA screening results (positive and negative)
+  * All MRSA isolates from any specimen type
+
+### MRSA Screening Exemptions
+
+Based on the [draft] 2025 “Methicillin Resistant Staphylococcus Aureus (MRSA) Management Policy” for The Newcastle upon Tyne Hospitals NHS Foundation Trust (covering both the RVI and Freeman hospitals), almost all patients admitted require MRSA screening except for certain specifically exempted day case areas and wards.
+
+Below is a summary of patients and wards that do **not** need MRSA admission screening at RVI and Freeman. Data for location codes associated with these wards have been removed from further analysis.
+
+#### RVI site
+
+Family Health:
+
+- GNCH 2b, 8, and RV40: These are day case areas and are exempt from screening.
+- GNCH 6 PED: Exempt from screening.
+- RV32/33/41: No screening required **unless** the patient is having a caesarean section and/or is in a high-risk group (refer to section 4.1c Maternity).
+- RV21 and 39: These are day case areas and are exempt from screening.
+
+#### Freeman Hospital site
+
+- **No** specific day case areas or wards at Freeman are listed as exempt in the provided policy extract.  
+
+#### Summary Table
+
+| Hospital | Ward/Area          | MRSA Screening on Admission?         |
+|----------|--------------------|--------------------------------------|
+| RVI      | GNCH 2b, 8         | No (day case areas, exempt)          |
+| RVI      | GNCH 6 PED         | No (exempt)                          |
+| RVI      | RV32/33/41         | No (unless C-section/high-risk)      |
+| RVI      | RV40               | No (day case area, exempt)           |
+| RVI      | RV21, 39           | No (day case areas, exempt)          |
+| Freeman  | [All listed wards] | Yes (no exemptions listed)           |
+
+## Data Processing and Analysis
+
+EPR and LIMS data are processed, cleaned/wrangled, quality-checked, analysed and reported using [R programming](https://nhsrcommunity.com/) and [Quarto](https://quarto.org/), open-source scientific and technical publishing system.
+
+## Audit standard
+
+To be categorised as compliant with the Trust's MRSA policy, a patient's MRSA screening sample must be received by the laboratory within the period starting 18 weeks prior to admission. 
+
+Samples received by the laboratory one day after the date of hospital admission will be labelled as compliant. This is to account for MRSA screening specimens collected late on the date of hospital admission, when current arrangements around specimen transport of non-urgent samples may mean that the specimen isn't received until one day after hospital admission.
+
+# Limitations
+
+LIMS and EPR data do not include any historical laboratory results for current inpatients usually resident outside of the Newcastle area. For current inpatients usually resident outside of the Newcastle area, historical laboratory results are stored in other data repositories, not accessible through the EPR or LIMS. To access historical microbiology results for current inpatients usually resident outside of the Newcastle area, clinicians at NUTH need to access a separate computer system called [OpenICE](https://icedesktop.nuth.nhs.uk/icedesktop/). In other words, this method is likely to  underestimate the problem because it excludes non-NUTH microbiology data for current inpatients with a known history of MRSA at an external laboratory.
+
+Furthermore, the EPR data only includes current inpatient at RVI, FH, GNCH and NCCC, with a length of stay ≥24 hours, who have had a new inpatient medication prescribed within previous 7 days. This means that patients admitted <24h are excluded, as are all patients who were discharged from hospital prior to the Nautilus data warehouse being interrogated. Furthermore, patients who have not had a new inpatient medication prescribed within previous 7 days are excluded.
+
+To keep the amount of data needed to be extracted from the LIMS manageable, this analysis only includes current inpatients who were admitted to NUTH within the last 6 weeks.
+
+Also note: 
+
+- A non-compliant patient will remain on the report impacting compliance for a period of 6 weeks (1.5 months).
+- Performance in "upstream areas/wards" like RVAS and pre-assessment clinic (PAC) will affect compliance results in “downstream areas/wards”.
+- MRSA screens received without a valid 'date of collection' may not count towards compliance figures.
+- Prolonged transit times may lead to MRSA screens not counting towards compliance figures. 
+
+## Details about missing data
+<!-- 	#13f -->
+<!-- Details about missing data	 -->
+
+For the week ending `r format(dmy(reports_date), '%A %d %B %Y')`, data completeness was assessed for key variables. Specimen receipt date and time were documented for all specimens. Specimen collection date and time were available for `r n_specimen_missing_collection_date` out of `r n_specimen_total` specimens (`r n_specimen_missing_collection_date_perc`%). All other key variables—including patient identifiers, admission details, and MRSA screening sample characteristics—were complete across the dataset. Missing data were not imputed; analyses were conducted on complete cases only. 
+
+# Results
+
+- This report focuses on data extracted on **`r format(ymd(import_date_report), '%A %d %B %Y')`** 
+
+- For **current inpatients** meeting all the inclusion and exclusion criteria outlined in the methods section:
+
+  - Earliest admission date: **`r format(start_date_admission_dt, "%d %B %Y")`**
+  
+  - Latest admission date: **`r format(end_date_admission_dt, "%d %B %Y")`**
+
+  - Distinct current inpatients (n): **`r data_cohort_admission_mrsa_mrn_total`**
+  
+  - Distinct current inpatients with MRSA isolated from any specimen received for culture at NUTH between `r mrsa_earliest_date_formatted` and `r mrsa_latest_date_formatted` (n): **`r mrsa_pos_pt_total`**
+  
+  - Distinct current inpatients with MRSA bacteraemia diagnosed at NUTH between `r mrsa_earliest_date_formatted` and `r mrsa_latest_date_formatted` (n): **`r mrsa_pos_bacteraemia_pt_total`**
+  
+  - Distinct current inpatients with MRSA screen received within MRSA policy-compliant time period (n): **`r data_mrsa_screen_compliant_n_true`**
+  
+  <!-- - Proportion of MRSA positive patients who have had an MRSA bacteraemia (%): **`r prop_mrsa_pos_mrsa_bacteraemia_rounded`** -->
+  
+  - Distinct current inpatients **without** MRSA screen received within MRSA policy-compliant time period (n): **`r data_mrsa_screen_compliant_n_false`**
+
+## Compliance with Trust MRSA policy
+
+### This week
+
+For data extracted on **`r format(ymd(import_date_report), '%A %d %B %Y')`** 
+
+Proportion of current inpatients with MRSA screen received within MRSA policy-compliant time period (%): **`r data_mrsa_screen_compliant_prop_true_rounded`**
+
+```{r mrsa_screening_compliance_piechart}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+# chart created in 01_src/03_wrangle/03_wrangle - Apex and EPR data to audit MRSA screening compliance.R
+
+data_mrsa_screen_compliant_prop_piechart
+```
+
+For the `r data_mrsa_screen_compliant_prop_false_rounded`% of patients where an MRSA screen was not received within the MRSA policy-compliant time period, `r mrsa_screened_but_not_compliant`% did in fact have a screen received.
+
+However, specimen transit times were significant in this cohort, with specimens taking, on average, `r non_compliant_but_sample_received_mean_time_to_receive_hours` hours to arrive in the laboratory from the date and time of collection (range `r non_compliant_but_sample_received_min_time_to_receive_hours` - `r non_compliant_but_sample_received_max_time_to_receive_hours` hours).
+
+### Data over time
+
+```{r}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+#| label: mrsa_screening_compliance_over_time_1
+#| fig-cap: "MRSA Admission Screening Compliance Rate Over Time"
+
+raw_dates <- c("13-Jan-2026",
+               "06-Jan-2026",
+               "30-Dec-2025",
+               "23-Dec-2025",
+               "16-Dec-2025",
+               "09-Dec-2025",
+               "02-Dec-2025",
+               "25-Nov-2025",
+               "18-Nov-2025",
+               "11-Nov-2025",
+               "04-Nov-2025",
+               "28-Oct-2025",
+               "21-Oct-2025",
+               "14-Oct-2025",
+               "07-Oct-2025",
+               "30-Sep-2025",
+               "23-Sep-2025",
+               "16-Sep-2025",
+               "09-Sep-2025",
+               "02-Sep-2025",
+               "26-Aug-2025",
+               "19-Aug-2025",
+               "12-Aug-2025",
+               "05-Aug-2025",
+               "29-Jul-2025",
+               "22-Jul-2025",
+               "15-Jul-2025",
+               "08-Jul-2025",
+               "01-Jul-2025",
+               "24-Jun-2025",
+               "17-Jun-2025",
+               "10-Jun-2025",
+               "27-May-2025",
+               "20-May-2025",
+               "13-May-2025",
+               "06-May-2025", # exclude week ending 6/5/25 as this includes erecord downtime from Fri PM 2-5-25 - Sun 4-5-25 PM?
+               "29-Apr-2025", 
+               "22-Apr-2025", 
+               "15-Apr-2025", 
+               "08-Apr-2025", 
+               "01-Apr-2025", 
+               "25-Mar-2025", 
+               "18-Mar-2025", 
+               "11-Mar-2025", 
+               "04-Mar-2025", 
+               "25-Feb-2025", 
+               "18-Feb-2025", 
+               "11-Feb-2025", 
+               "04-Feb-2025", 
+               "28-Jan-2025", 
+               "21-Jan-2025", 
+               "14-Jan-2025", 
+               "07-Jan-2025")
+
+raw_compliance <- c(60.4, #"13-Jan-2026",
+                    59.0, #"06-Jan-2026",
+                    61.0, #"30-Dec-2025",
+                    67.6, #"23-Dec-2025",
+                    62.4, #"16-Dec-2025",
+                    62.7, #"09-Dec-2025",
+                    69.8, #"02-Dec-2025",
+                    64.9, #"25-Nov-2025",
+                    60.8, #"18-Nov-2025",
+                    60.3, #"11-Nov-2025",
+                    63.5, #"04-Nov-2025",
+                    69.5, # "28-Oct-2025",
+                    62.5, #"21-Oct-2025",
+                    65.4, # "14-Oct-2025",
+                    64.4, #"07-Oct-2025",
+                    65.8, #"30-Sep-2025",
+                    64.1, #"23-Sep-2025",
+                    65.4, #"16-Sep-2025",
+                    63.9, # "09-Sep-2025",
+                    70.4, # "02-Sep-2025",
+                    NA, # "26-Aug-2025",
+                    64.0, # "19-Aug-2025",
+                    65.1, # "12-Aug-2025",
+                    63.8, # "05-Aug-2025",
+                    68.8, # "29-Jul-2025",
+                    68.5, # "22-Jul-2025",
+                    67.2, # "15-Jul-2025"
+                    63.9, # "08-Jul-2025"
+                    64.4, # "01-Jul-2025"
+                    63.4, # "24-Jun-2025
+                    64.2, # "17-Jun-2025"
+                    63.3, # "10-Jun-2025"
+                    63.9, # "27-May-2025"
+                    64.4, # "20-May-2025"
+                    60.8, # data for "13-May-2025"
+                    NA, # data for "06-May-2025" # exclude week ending 6/5/25 as this includes erecord downtime from Fri PM 2-5-25 - Sun 4-5-25 PM?
+                    61.3, # data for "29-Apr-2025"
+                    56.9, 
+                    63.1, 
+                    64.8, 
+                    63.8, 
+                    61.4, 
+                    60.2, 
+                    56.7, 
+                    56.0, 
+                    58.0, 
+                    55.2, 
+                    53.6, 
+                    51.8, 
+                    51.3, 
+                    52.0, 
+                    47.8, 
+                    48.7)
+
+# Data preparation
+data <- data.frame(Date = as.Date(raw_dates, format = "%d-%b-%Y"),
+                   Compliance = as.numeric(raw_compliance)) %>%
+  arrange(Date) %>%
+  filter(!is.na(Compliance)) |> 
+  as_tibble()
+
+data_2 <- data %>%
+  mutate(new_date = floor_date(Date, unit = "1 week", week_start = getOption("lubridate.week.start", 1))) %>%
+  group_by(new_date) %>%
+  summarise(av_compliance = mean(Compliance)) %>%
+  mutate(new_date = as.POSIXct(new_date))  # <--- add this line
+
+# SPC object
+spc_obj <- ptd_spc(
+  data_2,
+  value_field = "av_compliance",
+  date_field = "new_date",
+  improvement_direction = "increase"
+)
+
+# Basic SPC plot
+spc_plot <- ptd_create_ggplot(
+  spc_obj,
+  point_size = 3,
+  percentage_y_axis = FALSE,
+  main_title = "Compliance SPC Chart",
+  x_axis_label = NULL,
+  y_axis_label = "Compliance (%)",
+  fixed_x_axis_multiple = TRUE,
+  fixed_y_axis_multiple = TRUE,
+  x_axis_date_format = "%m/%y",
+  x_axis_breaks = "1 months",
+  y_axis_breaks = NULL,
+  icons_size = 0L,
+  icons_position = "none",
+  colours = ptd_spc_colours(),
+  theme_override = NULL,
+  break_lines = "limits"
+)
+
+# --- HIGHLIGHT RECENT DATA (last point) ---
+recent_point <- data_2 %>% filter(new_date == max(new_date))
+
+# --- ANNOTATE DOWNTIME (vertical line for 06-May-2025) ---
+downtime_date <- as.POSIXct("2025-05-06", format = "%Y-%m-%d")
+
+# Final plot with highlights and annotation
+spc_plot +
+  # geom_point(data = recent_point, 
+  #            aes(x = new_date, y = av_compliance), 
+  #            color = "skyblue", 
+  #            size = 3) +
+  geom_vline(xintercept = as.numeric(downtime_date), 
+             linetype = "dashed", color = "blue", linewidth = 1) +
+  annotate("text", 
+           x = downtime_date,
+           y = min(data_2$av_compliance, na.rm = TRUE) + 2,
+           label = "eRecord downtime", angle = 90, hjust = -0.0, vjust = -0.5, color = "blue", fontface = "bold")
+
+
+```
+
+## Details about missing data
+<!-- 	#13f -->
+<!-- Details about missing data	 -->
+
+Specimen collection date and time were available for `r (n_specimen_total - n_specimen_missing_collection_date)` out of `r n_specimen_total` specimens (`r n_specimen_missing_collection_date_perc`%). Missing data were not imputed; analyses were conducted on complete cases only. 
+
+## Compliance with MRSA screening by Ward
+
+### Wards with highest compliance rates
+
+```{r mrsa_screen_compliance_by_ward_best}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+# best performing wards (i.e. highest MRSA screening compliance, above Y percent) with >X eligible patients -------------
+
+create_mrsa_compliance_chart(
+    data = data_cohort_admission_mrsa_perc_compliance, 
+    min_eligible_patients = 10,
+    min_compliance_pct = 75,
+    max_compliance_pct = 100,
+    performance_title = ": \nWards with highest compliance rate")
+```
+
+### Wards with lowest compliance rates
+
+```{r mrsa_screen_compliance_by_ward_worst}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+# worst performing wards (i.e. lowest MRSA screening compliance, below Y percent) with >X eligible patients -------------
+
+create_mrsa_compliance_chart(
+  data = data_cohort_admission_mrsa_perc_compliance, 
+  min_eligible_patients = 10,
+  min_compliance_pct = 0,
+  max_compliance_pct = 50,
+  performance_title = ": \nWards with lowest compliance rate")
+
+```
+
+### Compliance data for all wards
+
+MRSA admission screening compliance varied substantially across the `r ward_stats$n_wards` inpatient locations analysed. Mean ward-level compliance was `r round(ward_stats$mean, 1)`% (SD `r round(ward_stats$sd, 1)`%; median `r round(ward_stats$median, 1)`%; range `r round(ward_stats$min, 1)`%–`r round(ward_stats$max, 1)`%). The coefficient of variation was `r round(ward_stats$cv, 1)`%, indicating substantial heterogeneity in screening practices across the Trust.
+
+```{r mrsa_compliance_all_wards_table}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+mrsa_compliance_all_wards_table
+```
+
+## MRSA screens received per patient
+
+a total of `r screen_summary$total_specimen_no` MRSA screens were received for culture from `r screen_summary$total_patients_in_cohort` MRSA admission screening-eligible patients. Of these patients, `r screen_summary$total_patients_screened` (`r round((screen_summary$total_patients_screened / screen_summary$total_patients_in_cohort) * 100, 1)`%) had an MRSA screen taken at any time (not necessarily collected and received in a timely enough fashion to be considered compliant with policy). On average, `r round(screen_summary$avg_screens_per_patient_with_sample, 1)` screens were taken from the `r screen_summary$total_patients_screened` MRSA-screened patients (range 1–`r screen_summary$max_screens`). The mean time from admission to first MRSA screen receipt was `r timing_inline_stats_screen_no$mean_days` days (SD `r timing_inline_stats_screen_no$sd_days`; median `r timing_inline_stats_screen_no$median_days`; range `r timing_inline_stats_screen_no$min_days`–`r timing_inline_stats_screen_no$max_days` days). 
+
+Screened patients received a mean of `r round(screen_summary$avg_screens_per_patient_with_sample, 1)` screens (range 1–`r screen_summary$max_screens`). 
+
+```{r mrsa_screen_received_per_mrn}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+mrsa_screen_received_per_mrn
+```
+
+## Timing of MRSA screens relative to admission
+
+Among MRSA admission screened-patients, the mean time from admission to first MRSA screen receipt was `r timing_inline_stats_screen_no$mean_days` days (SD `r timing_inline_stats_screen_no$sd_days`; median `r timing_inline_stats_screen_no$median_days`; range `r timing_inline_stats_screen_no$min_days`–`r timing_inline_stats_screen_no$max_days` days).
+
+```{r mrsa_screen_timing_days_from_admission}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+mrsa_screen_timing_days_from_admission
+```
+
+## Location where MRSA screen was taken for screening-compliant patients
+
+`r top_location_undertaking_mrsa_screening` undertook the most screening for MRSA policy-compliant current inpatients.
+
+```{r mrsa_screening_location_chart}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+mrsa_screening_location_chart
+```
+
+# Interactive table 
+
+Interactive table featuring details of distinct current inpatients **without** MRSA screen received within MRSA policy-compliant time period, arranged in ward order.
+
+```{r non_mrsa_compliant_patients_list_table}
+#| eval: true
+#| include: true
+#| echo: false
+#| error: false
+#| message: false
+
+# using function created in 01_src/functions.R
+
+not_as_factor <- c("mrn", "initials", "fin", "MRSA screen collection date/time", "MRSA screen transit time (hours)")
+interactive_table(data_mrsa_screen_non_compliant_for_table, nrow = 5, not_as_factor = not_as_factor)
+```
+
+
+<!-- ## References {.unnumbered} -->
+
+<!-- ::: {#refs} -->
+<!-- ::: -->
+
+<!-- # Appendix {.unnumbered} -->
+
+```{r beepr_finished}
+beepr::beep(3)
+```
