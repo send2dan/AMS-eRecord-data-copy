@@ -1,0 +1,4 @@
+# Use the brand file for all documents in the project
+brand: _brand.yml
+project:
+  output-dir: 02_data_output/render_output_holding
