@@ -51,4 +51,4 @@ To explore the scripts and examples provided in this repository:
 Anyone interested in contributing, replicating, or adapting the RAP is welcome to do so. Please feel free to contact **Daniel Weiand** for further guidance:
 
 - **Email**: [dweiand@nhs.net](mailto:dweiand@nhs.net)
-- **GitHub**: [https://github.com/send2dan/public](GitHub public repo)
+- **GitHub**: [https://github.com/send2dan/public]
