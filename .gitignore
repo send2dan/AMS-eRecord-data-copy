@@ -134,3 +134,4 @@ rsconnect/
 /*_files/
 /.quarto/
 
+.Rprofile
