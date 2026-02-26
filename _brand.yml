@@ -81,9 +81,9 @@ typography:
     - family: "Frutiger W01"
       source: file
       files:
-        - path: fonts/FrutigerLTW01-55Roman.woff2
+        - path: fonts/FrutigerLTW01-55Roman.ttf
           weight: 400
-        - path: fonts/FrutigerLTW01-65Bold.woff2
+        - path: fonts/FrutigerLTW01-65Bold.ttf
           weight: 700
       
   base:
