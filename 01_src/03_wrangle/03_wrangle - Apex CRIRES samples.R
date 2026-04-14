@@ -47,12 +47,16 @@ data_crires_bc_wrangled <- data_crires_bc_wrangled |>
   filter(!antibiotic_code == "CEFB") |> 
   #remove CPOD antibiotic code 
   filter(!antibiotic_code == "CPOD") |>
+  #remove GM30 antibiotic code 
+  filter(!antibiotic_code == "GM30") |>
   #remove OCARB antibiotic code 
   filter(!antibiotic_code == "OCARB") |>
   #remove STP antibiotic code 
   filter(!antibiotic_code == "STP") |>
   #remove OCARB antibiotic code 
   filter(!antibiotic_code == "KCARB") |>
+  #remove NCARB
+  filter(!antibiotic_code == "NCARB") |>
   #remove 23CARB antibiotic code
   filter(!antibiotic_code == "23CARB") |>
   #remove VCARB antibiotic code 
@@ -63,8 +67,24 @@ data_crires_bc_wrangled <- data_crires_bc_wrangled |>
   filter(!antibiotic_code == "PIPER") |>
   #remove NOVO antibiotic code 
   filter(!antibiotic_code == "NOVO") |>
+  #replace APIV with AMX 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APIV$", replacement = "AMX")) |> 
+  #replace APOR with AMX 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APOR$", replacement = "AMX")) |> 
+  #replace APUN with AMX 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APUN$", replacement = "AMX")) |> 
   #replace AP with AMP 
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^AP$", replacement = "AMX")) |> 
+  #replace CAMXIV with AMC 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^CAMXIV$", replacement = "AMC")) |> 
+  #replace CAMXOR with AMC 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^CAMXOR$", replacement = "AMC")) |> 
+  #replace CAMXCO with AMC 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^CAMXCO$", replacement = "AMC")) |> 
+  #replace CAMXUN with AMC 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^CAMXUN$", replacement = "AMC")) |> 
+  #replace FLUCLX with FLC 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^FLUCLX$", replacement = "FLC")) |>
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^CFX$", replacement = "LEX")) |> 
   #replace CD with CLI
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^CD$", replacement = "CLI")) |> 
@@ -83,9 +103,7 @@ data_crires_bc_wrangled <- data_crires_bc_wrangled |>
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^TM$", replacement = "TMP")) |>
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^RP$", replacement = "RIF")) |>
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "TED", replacement = "TZD")) |>
-  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^FOT$", replacement = "FOS")) |>
-  #remove NCARB
-  filter(!antibiotic_code == "NCARB")
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^FOT$", replacement = "FOS")) 
 
 # data_crires_bc_wrangled |> 
 #   glimpse()
@@ -155,8 +173,10 @@ data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |>
 antibiotics_in_dataset <- colnames(data_crires_bc_wrangled_wide)[is_sir_eligible(data_crires_bc_wrangled_wide)] 
 
 # #test to see how specimens look that have org with "D" susceptibility
-AMR::as.sir(c("S", "I", "R", "A", "B", "C"))
-AMR::as.sir(c("S", "I", "R", "D", "U", "C"))
+AMR::as.sir(c("S", "I", "R", "A", "B", "C", "X"))
+AMR::as.sir(c("S", "I", "R", "D", "U", "C", "X"))
+# D is interpreted as SDD
+# X is interpreted as NA
 
 data_crires_bc_wrangled_wide |> 
   glimpse()
@@ -172,10 +192,24 @@ data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |>
 
 #replace "D" with "R" to work with as.sir and is_sir_eligible
 data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |> 
-  mutate(across(where(AMR::is_sir_eligible), 
-                ~ str_replace_all(.x,
-                                  pattern = "D", 
-                                  replacement = "R")))
+  # Step 1: Replace "D" and "X" with "R" in raw character columns for
+  # ATM and CAZ (before as.sir conversion)
+  mutate(across(
+    c(ATM, CAZ),
+    ~ str_replace_all(.x, pattern = "^[DX]$", replacement = "R")
+  )) |>
+  # Step 2: Convert all SIR-eligible columns to class `sir`
+  mutate(across(where(is_sir_eligible), as.sir)) |>
+  # Step 3: Convert ATM and CAZ to class `sir` (now clean, no warnings)
+  mutate(across(c(ATM, CAZ), as.sir)) |>
+  # Step 4: Replace "D" and "X" with "R" in already-converted sir columns
+  # (handles any remaining D/X that slipped through as.sir)
+  mutate(across(
+    where(is_sir_eligible),
+    ~ as.sir(str_replace_all(as.character(.x),
+                             pattern     = "^[DX]$",
+                             replacement = "R"))
+  ))
 
 data_crires_bc_wrangled_wide |> 
   glimpse()

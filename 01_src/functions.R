@@ -322,18 +322,24 @@ read_db_file <- function(db_name) {
   
   # Replace "D" with "R" for SIR-eligible columns
   db_data <- db_data |>
-    mutate(across(where(AMR::is_sir_eligible),
-                  ~ str_replace_all(.x,
-                                    pattern = "D",
-                                    replacement = "R")))
-  
-  # Format vectors in database
-  db_data <- db_data |>
-    dplyr::mutate(across(where(AMR::is_sir_eligible), AMR::as.sir)
-                  #,
-                  #across(c(date_of_birth, receive_date), lubridate::as_date)
-    ) |>
-    dplyr::glimpse()
+    # Step 1: Replace "D" and "X" with "R" in raw character columns for
+    # ATM and CAZ (before as.sir conversion)
+    mutate(across(
+      c(ATM, CAZ),
+      ~ str_replace_all(.x, pattern = "^[DX]$", replacement = "R")
+    )) |>
+    # Step 2: Convert all SIR-eligible columns to class `sir`
+    mutate(across(where(is_sir_eligible), as.sir)) |>
+    # Step 3: Convert ATM and CAZ to class `sir` (now clean, no warnings)
+    mutate(across(c(ATM, CAZ), as.sir)) |>
+    # Step 4: Replace "D" and "X" with "R" in already-converted sir columns
+    # (handles any remaining D/X that slipped through as.sir)
+    mutate(across(
+      where(is_sir_eligible),
+      ~ as.sir(str_replace_all(as.character(.x),
+                               pattern     = "^[DX]$",
+                               replacement = "R"))
+    ))
   
   DBI::dbDisconnect(con)
   return(db_data)
