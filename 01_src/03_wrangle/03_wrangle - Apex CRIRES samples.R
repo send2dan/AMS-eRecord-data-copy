@@ -53,7 +53,7 @@ data_crires_bc_wrangled <- data_crires_bc_wrangled |>
   filter(!antibiotic_code == "OCARB") |>
   #remove STP antibiotic code 
   filter(!antibiotic_code == "STP") |>
-  #remove OCARB antibiotic code 
+  #remove KCARB antibiotic code 
   filter(!antibiotic_code == "KCARB") |>
   #remove NCARB
   filter(!antibiotic_code == "NCARB") |>
@@ -73,8 +73,12 @@ data_crires_bc_wrangled <- data_crires_bc_wrangled |>
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APOR$", replacement = "AMX")) |> 
   #replace APUN with AMX 
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APUN$", replacement = "AMX")) |> 
+  #replace APCO with AMX 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APCO$", replacement = "AMX")) |> 
   #replace AP with AMP 
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^AP$", replacement = "AMX")) |> 
+  #replace COAMOX with AMC 
+  mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^COAMOX$", replacement = "AMC")) |> 
   #replace CAMXIV with AMC 
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^CAMXIV$", replacement = "AMC")) |> 
   #replace CAMXOR with AMC 
