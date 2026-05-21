@@ -198,10 +198,8 @@ data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |>
 data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |> 
   # Step 1: Replace "D" and "X" with "R" in raw character columns for
   # ATM and CAZ (before as.sir conversion)
-  mutate(across(
-    c(ATM, CAZ),
-    ~ str_replace_all(.x, pattern = "^[DX]$", replacement = "R")
-  )) |>
+  # After — safe across all DB files
+  mutate(across(any_of(c("ATM", "CAZ")), ~ str_replace_all(.x, "^[DX]$", "R"))) |>
   # Step 2: Convert all SIR-eligible columns to class `sir`
   mutate(across(where(is_sir_eligible), as.sir)) |>
   # Step 3: Convert ATM and CAZ to class `sir` (now clean, no warnings)
