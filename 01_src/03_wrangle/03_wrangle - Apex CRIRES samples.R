@@ -75,7 +75,7 @@ data_crires_bc_wrangled <- data_crires_bc_wrangled |>
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APUN$", replacement = "AMX")) |> 
   #replace APCO with AMX 
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^APCO$", replacement = "AMX")) |> 
-  #replace AP with AMP 
+  #replace AP with AMX 
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^AP$", replacement = "AMX")) |> 
   #replace COAMOX with AMC 
   mutate(antibiotic_code = str_replace(antibiotic_code, pattern = "^COAMOX$", replacement = "AMC")) |> 
