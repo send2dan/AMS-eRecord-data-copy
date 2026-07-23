@@ -249,7 +249,9 @@ data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |>
   mutate(original_organism_code = organism_code,
          original_organism_code_verbose = organism_code_verbose,
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Kliyveromyces\\sMarxianus$", replacement = "Kluyveromyces marxianus"), #AMR calls Kluyveromyces marxianus "UNKNOWN". Note spelling error in APEX ID.
-         organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Staph cohnii\\ssub\\sureolyticum$", replacement = "Coagulase negative Staphylocococcus"),
+         organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Diphtheroids$", replacement = "Corynebacterium spp."),
+         organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Staph\\sspecies$", replacement = "Coagulase negative Staphylocococcus"),
+         organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Staph\\sspecies$", replacement = "Coagulase negative Staphylocococcus"),
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Strep\\sanginosus\\sgroup\\sorganism$", replacement = "Streptococcus anginosus"),
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Strep.dysgalactiae\\s\\(Group\\sC/G\\)$", replacement = "Streptococcus dysgalactiae"),
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Strep.agalact.*$", replacement = "Streptococcus agalactiae"),
@@ -271,6 +273,14 @@ data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |>
            TRUE ~ organism_code_verbose  # Keep existing values for all other cases
          )
   )
+
+# check for uncertain organisms that can't be passed through as.mo()
+# "Run `print(mo_uncertainties(), n = ...)` to view more entries, or save `mo_uncertainties()` to an object."
+# Matching scores are based on the resemblance between the input and the full taxonomic name, and the pathogenicity in humans. See `?mo_matching_score`.
+
+uncertain_no <- mo_uncertainties()
+
+# uncertain_no |> View()
 
 # # remove organism codes etc. that can't pass through as.mo()
 # data_clean_sens <- data_clean_sens %>% 
