@@ -250,8 +250,7 @@ data_crires_bc_wrangled_wide <- data_crires_bc_wrangled_wide |>
          original_organism_code_verbose = organism_code_verbose,
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Kliyveromyces\\sMarxianus$", replacement = "Kluyveromyces marxianus"), #AMR calls Kluyveromyces marxianus "UNKNOWN". Note spelling error in APEX ID.
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Diphtheroids$", replacement = "Corynebacterium spp."),
-         organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Staph\\sspecies$", replacement = "Coagulase negative Staphylocococcus"),
-         organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Staph\\sspecies$", replacement = "Coagulase negative Staphylocococcus"),
+         organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Staph\\sspecies$", replacement = "Coagulase negative Staphylococcus"),
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Strep\\sanginosus\\sgroup\\sorganism$", replacement = "Streptococcus anginosus"),
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Strep.dysgalactiae\\s\\(Group\\sC/G\\)$", replacement = "Streptococcus dysgalactiae"),
          organism_code_verbose = str_replace(organism_code_verbose, pattern = "^Strep.agalact.*$", replacement = "Streptococcus agalactiae"),
