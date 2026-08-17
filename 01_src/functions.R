@@ -1,63 +1,37 @@
 
 # Load packages -----------------------------------------------------------
 
-library(excel.link) # use this package to open a password protected file
 library(janitor) # to use clean_names()
 library(tidyverse) # to use str_c() ...
 library(here)
 
-# # citedrive ---------------------------------------------------------------
-# 
-# download.file("https://api.citedrive.com/bib/46d6b4c4-5461-4754-9db4-1a0a26f43ed9/references.bib?x=eyJpZCI6ICI0NmQ2YjRjNC01NDYxLTQ3NTQtOWRiNC0xYTBhMjZmNDNlZDkiLCAidXNlciI6ICIyNzk0IiwgInNpZ25hdHVyZSI6ICI5NDQwN2E3ZDkzZDQ1NzU4NGFkZDY2ZTRjNmYxN2FkNzk0MTkzNTA5ZjkzOTRkNWRlMDE3ZDQzZDYxZmU3YWJiIn0=/bibliography.bib", "citedrive.bib")
 
-# Open password protected excel file using Sys.getenv() -------------------------
+# reports_date ------------------------------------------------------------
 
-open_excel_password_prot <- function(
-    data,
-    data_folder_name = 'antimicrobial_audit/',
-    sheet, 
-    password
-    ) {
-  excel.link::xl.read.file(filename = paste0(
-    Sys.getenv('SHARED_REPO_PATH'),
-    '02_data/',
-    data_folder_name,
-    data
-  ),
-  password = Sys.getenv(password),
-  xl.sheet = sheet
-  ) |>
-    clean_names() |> 
-    as_tibble()
-}
+reports_date <- lubridate::floor_date(
+  lubridate::today(),
+  unit = "week",
+  week_start = 2
+) |> 
+  format("%d-%m-%Y") 
 
-# Open excel file with no password ----------------------------------------
+# Open excel file ------------------------------------------------------------
 
 open_excel <- function(data, is_audit = FALSE, sheet) {
-  excel.link::xl.read.file(filename=paste0(Sys.getenv('SHARED_REPO_PATH'),
-                               '02_data/',
-                               if_else(is_audit, "antimicrobial_audit/", ""),
-                               data),
-               xl.sheet=sheet) |>
-    clean_names() |> 
-    as_tibble()
+  
+  readxl::read_excel(
+    path = paste0(
+      Sys.getenv("SHARED_REPO_PATH"),
+      "02_data/",
+      if_else(is_audit, "antimicrobial_audit/", ""),
+      data
+    ),
+    sheet = sheet
+  ) |>
+    janitor::clean_names() |>
+    tibble::as_tibble()
+  
 }
-
-# # Test function
-# 
-# Sys.getenv("SAMPLE_DATASHEET_KEY")
-#   
-# test_2024_02_06 <- open_excel_password_prot(
-#   data="Sample dataset output 06-02-24.xlsx",
-#   password="SAMPLE_DATASHEET_KEY",
-#   sheet="Cohort and admission details")
-# 
-# Sys.getenv("SAMPLE_DATASHEET_KEY_2")
-# 
-# test_2024_03_26 <- open_excel_password_prot(
-#   data="Sample dataset output 26-03-24.xlsx",
-#   password="SAMPLE_DATASHEET_KEY_2",
-#   sheet="Cohort and admission details")
 
 
 # frequency poly ----------------------------------------------------------

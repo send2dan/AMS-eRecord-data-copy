@@ -11,26 +11,20 @@ load_dot_env()
 
 source(here("01_src", "functions.R"))
 
-# Load three password-protected Excel sheets
-data_mailing_list <- open_excel_password_prot(
+# Load three Excel sheets
+data_mailing_list <- open_excel(
   data = "report_mailing_lists.xlsx",
-  data_folder_name = "",
-  sheet = "report_mailing_list",
-  password = "MAILING_LISTS_KEY"
+  sheet = "report_mailing_list"
 )
 
-data_senders <- open_excel_password_prot(
+data_senders <- open_excel(
   data = "report_mailing_lists.xlsx",
-  data_folder_name = "",
-  sheet = "senders",
-  password = "MAILING_LISTS_KEY"
+  sheet = "senders"
 )
 
-data_report_description_text <- open_excel_password_prot(
+data_report_description_text <- open_excel(
   data = "report_mailing_lists.xlsx",
-  data_folder_name = "",
-  sheet = "report_desc_text",
-  password = "MAILING_LISTS_KEY"
+  sheet = "report_desc_text"
 )
 
 # 1.1 Clean and validate data -----------------------------------------------
